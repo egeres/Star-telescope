@@ -14,17 +14,18 @@ export default class Header extends Component {
     {
         return (<div
         style={{
-            width: "100%",
-            display: "flex",
-            flexGrow: 1,
+            width         : "100%",
+            display       : "flex",
+            // flexGrow      : 1,
             justifyContent: "center",
+            // flexDirection : "row",
         }}>
         {/* <div style={{backgroundColor:"black", width:"calc(50% - 100px - 10px)"}}><Animated_bar/></div> */}
 
             <div
                 style={{
-                    backgroundColor: "black",
-                    width: "calc(50% - 100px - 50px)",
+                    // backgroundColor: "black",
+                    width: "calc(50% - 100px)",
                     // display        : "table",
                     // verticalAlign  : "middle",
                     // textAlign      : "center",
@@ -37,7 +38,7 @@ export default class Header extends Component {
                     // alignContent:"center"
 
                     // display:flex;
-                    // flex-direction: column;
+                    // flexDirection: "row",
                     // justify-content: center;
                 }}
             >
@@ -50,7 +51,7 @@ export default class Header extends Component {
                 style={{
                     width          : "200px",
                     height         : "200px",
-                    backgroundColor: "red"  ,
+                    // backgroundColor: "red"  ,
                 }}
             >
                 <img src={this.state.user_profilepic} style={{width:"100%", borderRadius:"50%"}} />
@@ -59,8 +60,8 @@ export default class Header extends Component {
 
             <div
                 style={{
-                    backgroundColor: "black",
-                    width: "calc(50% - 100px - 50px)",
+                    // backgroundColor: "black",
+                    width: "calc(50% - 100px)",
                     // display        : "table",
                     // verticalAlign  : "middle",
                     // textAlign      : "center",

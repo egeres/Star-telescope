@@ -19,36 +19,25 @@ export default class Display_simple_graph extends Component
         this.height = 1000
     }
 
-    render() {
-        // if (this.props.align === "R") {
-        //     return <hr ref={this.myself} style={{ marginRight: "0px" }}></hr>;
-        // } else if (this.props.align === "L") {
-        //     return <hr ref={this.myself} style={{ marginLeft: "0px" }}></hr>;
-        // } else {
-        //     return <hr ref={this.myself} style={{}}></hr>;
-        // }
-
-        // return (<svg ref={this.myself} width={800} height={500}></svg>)
-        // console.log(this.width)
-        // console.log(this.height)
+    render()
+    {
         return (<svg ref={this.myself} width={this.props.width+"px"} height={this.props.height+"px"}></svg>)
     }
 
-    componentDidMount() {
+    componentDidMount()
+    {
         this.draw()
     }
     
-    componentDidUpdate() { this.draw() }
+    componentDidUpdate()
+    {
+        this.draw()
+    }
 
-    draw() {
-        // anime({
-        //     targets: this.myself.current,
-        //     width: ["0%", "100%"],
-        //     duration: 5000,
-        //     easing: "easeOutQuint", // https://easings.net
-        // });
-
-        let svg = d3.select(this.myself.current);
+    draw()
+    {
+        let svg     = d3.select(this.myself.current);
+        let tooltip = d3.select("#Tooltip")
 
         svg.selectAll("*").remove();
 
@@ -75,52 +64,94 @@ export default class Display_simple_graph extends Component
             .style("stroke-dasharray", ("3, 3"))
             .style("stroke", "#343434");
 
+        svg.append("line")
+            .attr("x1", this.props.margin)
+            .attr("y1", 0)
+            .attr("x2", this.props.margin)
+            .attr("y2", this.props.height)
+            .style("stroke-dasharray", ("3, 3"))
+            .style("stroke", "#343434");
+
+        svg.append("line")
+            .attr("x1", this.props.width - this.props.margin)
+            .attr("y1", 0)
+            .attr("x2", this.props.width - this.props.margin)
+            .attr("y2", this.props.height)
+            .style("stroke-dasharray", ("3, 3"))
+            .style("stroke", "#343434");
+
+
         if (this.props.data.length)
         {
-
-            // console.log( this.props.data.map(input => input.x) )
+            console.log(this.props.data)
 
             let x_max = Math.max(...this.props.data.map(input => input.x));
             let y_max = Math.max(...this.props.data.map(input => input.y));
 
-            // console.log(x_max)
-            // console.log(y_max)ç
-
-            // console.log(this.width)
-            // console.log(this.height)
-
-            // let x = this.props.margin +                     d3.scaleLinear().domain([0, x_max]).range([0, this.props.width  - 2*this.props.margin]);
-            // let y = this.props.margin + this.props.height - d3.scaleLinear().domain([0, y_max]).range([0, this.props.height - 2*this.props.margin]);
             let x = d3.scaleLinear().domain([0, x_max]).range([this.props.margin, this.props.width  - this.props.margin]);
-            let y = d3.scaleLinear().domain([0, y_max]).range([this.props.margin, this.props.height - this.props.margin]);
+            let y = d3.scaleLinear().domain([0, y_max]).range([this.props.height - this.props.margin, this.props.margin]);
 
-            // svg.append("circle")
-            //     .attr("cx", x(10))
-            //     .attr("cy", 100)
-            //     .attr("r", 40)
-            //     .style("fill", "blue");
+            // let data = [ {x:10, y:20}, {x:40, y:90}, {x:80, y:50} ]
+            
+            let y_axis = [0, 0.25, 0.5, 0.75, 1];
 
+            svg.selectAll("Lol")
+                .data(y_axis.map(x => x*y_max))
+                .enter()
+                .append("text")
+                    .attr("x", 25)             
+                    .attr("y", (d) => y(d))
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "16px") 
+                    // .style("text-decoration", "underline") 
+                    .attr("fill", "white")
+                    .text(d => d);
 
-
-
-            // var data = [ {x:10, y:20}, {x:40, y:90}, {x:80, y:50} ]
-
+            svg.selectAll("Lol")
+                .data(y_axis.map(x => x*x_max))
+                .enter()
+                .append("text")
+                    .attr("x", (d) => x(d))
+                    .attr("y", this.props.height - 10)             
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "16px") 
+                    // .style("text-decoration", "underline") 
+                    .attr("fill", "white")
+                    .text(d => d);
+    
             svg.selectAll("whatever")
                 .data(this.props.data)
                 .enter()
                 .append("circle")
                     .attr("cx", function(d){ return x(d.x) })
                     .attr("cy", function(d){ return y(d.y) })
-                    .attr("r", 3)
-                    .style("fill", "#8c8c8c");
+                    .attr("r", 5)
+                    .attr('opacity', 0.3)
+                    .style("fill", "#8c8c8c")
+
+                    .on("mouseover", function(d) {		
+                        // tooltip.transition()		
+                        //     .duration(200)		
+                        //     .style("opacity", .9);		
+                        tooltip
+                            .html(d + "<br/>")	
+                            .style("left", (d3.pointer(this)[0]) + "px")		
+                            .style("top",  (d3.pointer(this)[1] - 28) + "px");	
+
+                        d3.select(this).style("opacity", 1)
+                    })					
+                    .on("mouseout", function(d) {		
+                        // div.transition()		
+                        //     .duration(500)		
+                        //     .style("opacity", 0);	
+                        d3.select(this).style("opacity", 0.3)
+                    })
         }
 
     }
 }
 
 Display_simple_graph.propTypes = {
-    // message: PropTypes.string,
-    // onClick: PropTypes.func
     width : PropTypes.number,
     height: PropTypes.number,
     margin: PropTypes.number,
@@ -128,8 +159,6 @@ Display_simple_graph.propTypes = {
 };
 
 Display_simple_graph.defaultProps = {
-    // message: 'Hello',
-    // onClick: function(){ alert("Hello"); }
     width : 1000,
     height: 1000,
     margin: 10,

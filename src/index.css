@@ -38,3 +38,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.link_router
+{
+  margin         : 10px;
+  color          : #343434;
+  text-decoration: none;
+}
+
+.link_router:hover
+{
+  color          : #cacaca;
+
+}
+
+.element_spacer
+{
+  width : 25px;
+  height: 25px;
+}
+
+hr
+{
+  border-style: solid;
+  border-color: #343434;
+}
