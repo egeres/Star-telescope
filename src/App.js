@@ -51,9 +51,9 @@ class App extends Component {
         super(props);
         this.state = {
             list_of_starred        : [],
-            starred_count          : 0,
-            user_profilepic        : "",
-            list_of_counts_per_star: [],
+            // starred_count          : 0,
+            // user_profilepic        : "",
+            // list_of_counts_per_star: [],
         };
     }
 
@@ -62,7 +62,7 @@ class App extends Component {
 
             <div style={{ backgroundColor:"black", height:"100%" }}>
 
-			<Header user="egeres"></Header>
+			{/* <Header user="egeres"></Header> */}
 
 			<Router>
 				
@@ -86,7 +86,14 @@ class App extends Component {
             <Route path="/">
                 {/* <Home /> */}
                 <div>HOmeee</div>
-                <Display_simple_graph data={[ {x:0, y:0}, {x:10, y:20}, {x:40, y:90}, {x:80, y:50}, {x:100, y:100} ]} />
+                {/* <Display_simple_graph data={[ {x:0, y:0}, {x:10, y:20}, {x:40, y:90}, {x:80, y:50}, {x:100, y:100} ]} /> */}
+                <Display_simple_graph 
+                    data   = {this.extract_star_count(this.state.list_of_starred)}
+                    // data   = {this.extract_star_count([])}
+                    width  = {900}
+                    height = {300}
+                    margin = {20 }
+                />
                 {/* <Display_simple_graph data={this.state.list_of_counts_per_star} /> */}
             </Route>
             <Route path="/about">
@@ -104,6 +111,32 @@ class App extends Component {
 
             </div>
         );
+    }
+
+    extract_star_count(data)
+    {
+        let to_return = []
+        data.forEach(element => {
+
+            let   hehe    = (Math.round(element.stargazers_count/1000)*1000)/1000
+            
+            let was_incremented = false;
+            for (let i = 0; i < to_return.length; i++) {
+                const element = to_return[i];
+
+                if (element.x == hehe) { element.y += 1; was_incremented = true }
+            }
+
+            if (!was_incremented) { to_return.push({
+                x: hehe,
+                y: 1,
+            }) }
+
+        });
+
+        // console.log(to_return)
+        return to_return
+        // return [{x:10, y:10}, {x:20, y:20}]
     }
 
     componentWillMount() {
@@ -219,7 +252,8 @@ class App extends Component {
     }
 
     componentDidMount() {
-        // eva.replace()
+
+        eva.replace()
 
         // const got = require('got');
 
@@ -261,15 +295,57 @@ class App extends Component {
         // })))
 
         setTimeout(() => {
-            this.setState({ starred_count: 100 });
-			// this.setState({ user_profilepic: "https://img.microsiervos.com/images2021/ParacaidasPercyMicrosiervos.jpg"})
-			this.setState({ user_profilepic: "https://avatars.githubusercontent.com/u/241138?v=4"})
-			
-        }, 200);
+            // this.setState({ starred_count: 100 });
+			// this.setState({ user_profilepic: "https://avatars.githubusercontent.com/u/241138?v=4"})
+            this.setState({
+                list_of_starred: [
+                    {
+                        "id"              : 251352980,
+                        "name"            : "JasonMaToonRenderPipeline",
+                        "html_url"        : "https://github.com/Jason-Ma-233/JasonMaToonRenderPipeline",
+                        "stargazers_count": 459,
+                        "language"        : "C#",
+                        "created_at"      : "2020-03-30T15:48:44Z"
+                    },
+                    {
+                        "id"              : 325873493,
+                        "name"            : "videos",
+                        "html_url"        : "https://github.com/3b1b/videos",
+                        "stargazers_count": 385,
+                        "language"        : "Python",
+                        "created_at"      : "2020-12-31T21:07:33Z"
+                    },
+                    {
+                        "id"              : 103749180,
+                        "name"            : "cosmos",
+                        "html_url"        : "https://github.com/OpenGenus/cosmos",
+                        "stargazers_count": 12517,
+                        "language"        : "C++",
+                        "created_at"      : "2017-09-16T12:07:05Z"
+                    },
+                    {
+                        "id"              : 164554832,
+                        "name"            : "handson-ml2",
+                        "html_url"        : "https://github.com/ageron/handson-ml2",
+                        "stargazers_count": 13449,
+                        "language"        : "Jupyter Notebook",
+                        "created_at"      : "2019-01-08T03:49:07Z"
+                    },
+                    {
+                        "id"              : 136265021,
+                        "name"            : "albumentations",
+                        "html_url"        : "https://github.com/albumentations-team/albumentations",
+                        "stargazers_count": 7381,
+                        "language"        : "Python",
+                        "created_at"      : "2018-06-06T03:10:50Z"
+                    },
+                ]
+            })
+        }, 2000);
 
         // stars("egeres").then(console.log);
 
-        const get_repos = (user, page=0) => axios
+        const get_repos  = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
             .then(res => res.data)
             .then(res => res.map(x => {
@@ -280,61 +356,24 @@ class App extends Component {
                         stargazers_count: x.stargazers_count,
                         language        : x.language,
                         created_at      : x.created_at,
+                        topics          : null,
                     }
                 }
             ))
-            // .then(res => res.map())
 
-            // .map((x) => { return "asads"});
-            // .map((res) => { return {
-            //     id              : res.id,
-            //     name            : res.name,
-            //     html_url        : res.html_url,
-            //     stargazers_count: res.stargazers_count,
-            //     language        : res.language,
-            //     created_at      : res.created_at,
-            // } });
+        
 
-        // get_repos("egeres").then(   console.log);
-        // get_repos("egeres", 1).then(console.log);
-
-        // octokit.request('GET /repos/{owner}/{repo}/topics', {
-        //     owner: 'octocat',
-        //     repo: 'hello-world',
-        //     mediaType: {
-        //         previews: [
-        //         'mercy'
-        //         ]
-        //     }
-        // })
 
         const get_topics = (url) => axios
-            // .get(url, {
-            //     headers: {
-            //         // 'Content-Type': 'application/json',
-            //         // Accept        : 'application/json',
-            //         Accept:"application/vnd.github.mercy-preview+json"
-            //     }
-            // })
-            // .get(url,{
-            //     owner    : 'serengil',
-            //     repo     : 'deepface',
-            //     mediaType: {
-            //         previews: [
-            //         'mercy'
-            //     ]
-            //     }
-            // }
-            // )
             .get(url, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept"      : "application/vnd.github.mercy-preview+json"  // MUST ADD TO INCLUDE TOPICS
+                    "Accept"      : "application/vnd.github.mercy-preview+json" // MUST ADD TO INCLUDE TOPICS
                 }
             })
             .then((res) => res.data)
         
-        get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
+        // get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
 
         // https://api.github.com/repos/serengil/deepface/topics
 
