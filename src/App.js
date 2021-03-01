@@ -15,6 +15,7 @@ import * as eva from "eva-icons";
 import TableContainer from "./Table_mine";
 import Animated_bar from "./Animated_hr.jsx";
 import Header from "./Header.jsx";
+import Display_simple_graph from "./Display_simple_graph.jsx";
 
 import {
 	BrowserRouter as Router,
@@ -27,6 +28,7 @@ import {
 // https://github.com/learnwithparam/logrocket-smart-table
 
 import { useState, useEffect } from "react";
+import { random } from "animejs";
 
 // const FunctionalComponent = () => {
 //     useEffect(() => {
@@ -48,9 +50,10 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list_of_starred: [],
-            starred_count  : 0,
-            user_profilepic: "",
+            list_of_starred        : [],
+            starred_count          : 0,
+            user_profilepic        : "",
+            list_of_counts_per_star: [],
         };
     }
 
@@ -63,38 +66,39 @@ class App extends Component {
 
 			<Router>
 				
-                {/* {this.state.starred_count} */}
+            {/* {this.state.starred_count} */}
 
-				<nav>
-					<ul>
-						<li>
-						<Link to="/">Home</Link>
-						</li>
-						<li>
-						<Link to="/about">About</Link>
-						</li>
-						<li>
-						<Link to="/users">Users</Link>
-						</li>
-					</ul>
-				</nav>
+            <nav>
+                <ul>
+                    <li>
+                    <Link to="/">Home</Link>
+                    </li>
+                    <li>
+                    <Link to="/about">About</Link>
+                    </li>
+                    <li>
+                    <Link to="/users">Users</Link>
+                    </li>
+                </ul>
+            </nav>
 
-
-				<Switch>
-				<Route path="/about">
-					{/* <About /> */}
-					<div>asdasaaaaaadasd</div>
-				</Route>
-				<Route path="/users">
-					{/* <Users /> */}
-					<div>asdasdasd</div>
-                <TableContainer columns={this.columns} data={this.data} />
-				</Route>
-				<Route path="/">
-					{/* <Home /> */}
-					<div>dddddddd</div>
-				</Route>
-				</Switch>
+            <Switch>
+            <Route path="/">
+                {/* <Home /> */}
+                <div>HOmeee</div>
+                <Display_simple_graph data={[ {x:0, y:0}, {x:10, y:20}, {x:40, y:90}, {x:80, y:50}, {x:100, y:100} ]} />
+                {/* <Display_simple_graph data={this.state.list_of_counts_per_star} /> */}
+            </Route>
+            <Route path="/about">
+                {/* <About /> */}
+                <div>asdasaaaaaadasd</div>
+            </Route>
+            <Route path="/users">
+                {/* <Users /> */}
+                <div>asdasdasd</div>
+            <TableContainer columns={this.columns} data={this.data} />
+            </Route>
+            </Switch>
 
 			</Router>
 
@@ -232,6 +236,11 @@ class App extends Component {
         //       watchers   : s.watchers_count,
         //   })))
 
+        // setInterval(() => {
+        //     console.log("Appending...")
+        //     this.setState({ list_of_counts_per_star: [...this.state.list_of_counts_per_star, {x:Math.floor(Math.random() * 100) ,y:Math.floor(Math.random() * 100)}] })
+        // }, 1000)
+
         const stars = (user) =>
             axios
                 .get(
@@ -255,11 +264,79 @@ class App extends Component {
             this.setState({ starred_count: 100 });
 			// this.setState({ user_profilepic: "https://img.microsiervos.com/images2021/ParacaidasPercyMicrosiervos.jpg"})
 			this.setState({ user_profilepic: "https://avatars.githubusercontent.com/u/241138?v=4"})
-
 			
         }, 200);
 
-        stars("egeres").then(console.log);
+        // stars("egeres").then(console.log);
+
+        const get_repos = (user, page=0) => axios
+            .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
+            .then(res => res.data)
+            .then(res => res.map(x => {
+                    return {
+                        id              : x.id,
+                        name            : x.name,
+                        html_url        : x.html_url,
+                        stargazers_count: x.stargazers_count,
+                        language        : x.language,
+                        created_at      : x.created_at,
+                    }
+                }
+            ))
+            // .then(res => res.map())
+
+            // .map((x) => { return "asads"});
+            // .map((res) => { return {
+            //     id              : res.id,
+            //     name            : res.name,
+            //     html_url        : res.html_url,
+            //     stargazers_count: res.stargazers_count,
+            //     language        : res.language,
+            //     created_at      : res.created_at,
+            // } });
+
+        // get_repos("egeres").then(   console.log);
+        // get_repos("egeres", 1).then(console.log);
+
+        // octokit.request('GET /repos/{owner}/{repo}/topics', {
+        //     owner: 'octocat',
+        //     repo: 'hello-world',
+        //     mediaType: {
+        //         previews: [
+        //         'mercy'
+        //         ]
+        //     }
+        // })
+
+        const get_topics = (url) => axios
+            // .get(url, {
+            //     headers: {
+            //         // 'Content-Type': 'application/json',
+            //         // Accept        : 'application/json',
+            //         Accept:"application/vnd.github.mercy-preview+json"
+            //     }
+            // })
+            // .get(url,{
+            //     owner    : 'serengil',
+            //     repo     : 'deepface',
+            //     mediaType: {
+            //         previews: [
+            //         'mercy'
+            //     ]
+            //     }
+            // }
+            // )
+            .get(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept"      : "application/vnd.github.mercy-preview+json"  // MUST ADD TO INCLUDE TOPICS
+                }
+            })
+            .then((res) => res.data)
+        
+        get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
+
+        // https://api.github.com/repos/serengil/deepface/topics
 
 		// https://api.github.com/users/karpathy
     }
