@@ -15,6 +15,7 @@ import TableContainer from "./Table_mine";
 import Animated_bar from "./Animated_hr.jsx";
 import Header from "./Header.jsx";
 import Display_simple_graph from "./Display_simple_graph.jsx";
+import Display_bubble_graph from "./Display_bubble_graph.jsx";
 import Tooltip from "./Tooltip.jsx";
 
 
@@ -89,6 +90,7 @@ class App extends Component {
                 <Switch>
                     <Route exact path="/"> 
                     <div>
+
                         Distribution of starred repos
                         <Display_simple_graph 
                         data   = {this.extract_star_count(this.state.list_of_starred)}
@@ -96,7 +98,18 @@ class App extends Component {
                         height = {300 }
                         margin = {50  }
                         />
+
                         <div class="element_spacer"></div>
+                        {/* <Display_bubble_graph
+                        data   = {[
+                            {name:"A", density:10},
+                            {name:"B", density:30},
+                            {name:"C", density:90},
+                        ]}
+                        width  = {1000}
+                        height = {300 }
+                        margin = {50  }
+                        /> */}
                         asdadsads
                     </div> 
                     </Route>
