@@ -22,21 +22,25 @@ export default function Table({ columns, data }) {
 
   const handleFilterChange = e => {
     const value = e.target.value || undefined;
-    setFilter("show.name", value);
+    setFilter("name", value);
     setFilterInput(value);
   };
 
   // Render the UI for your table
   return (
     <>
+
       <input
         value={filterInput}
         onChange={handleFilterChange}
         placeholder={"Search name"}
       />
+      
       <table {...getTableProps()}>
+
         <thead>
           {headerGroups.map(headerGroup => (
+
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
                 <th
@@ -53,8 +57,10 @@ export default function Table({ columns, data }) {
                 </th>
               ))}
             </tr>
+
           ))}
         </thead>
+
         <tbody {...getTableBodyProps()}>
           {rows.map((row, i) => {
             prepareRow(row);
@@ -69,7 +75,9 @@ export default function Table({ columns, data }) {
             );
           })}
         </tbody>
+
       </table>
+
     </>
   );
 }

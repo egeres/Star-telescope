@@ -83,7 +83,7 @@ export default class Display_simple_graph extends Component
 
         if (this.props.data.length)
         {
-            console.log(this.props.data)
+            // console.log(this.props.data)
 
             let x_max = Math.max(...this.props.data.map(input => input.x));
             let y_max = Math.max(...this.props.data.map(input => input.y));
@@ -125,25 +125,26 @@ export default class Display_simple_graph extends Component
                 .append("circle")
                     .attr("cx", function(d){ return x(d.x) })
                     .attr("cy", function(d){ return y(d.y) })
-                    .attr("r", 5)
+                    .attr("r", 10)
                     .attr('opacity', 0.3)
                     .style("fill", "#8c8c8c")
 
-                    .on("mouseover", function(d) {		
-                        // tooltip.transition()		
-                        //     .duration(200)		
-                        //     .style("opacity", .9);		
+                    .on("mouseover", function(d) {
+                        // console.log(d)
+                        tooltip.transition()		
+                            .duration(200)		
+                            .style("opacity", .9);		
                         tooltip
                             .html(d + "<br/>")	
-                            .style("left", (d3.pointer(this)[0]) + "px")		
-                            .style("top",  (d3.pointer(this)[1] - 28) + "px");	
+                            .style("left", (d.clientX) + "px")		
+                            .style("top",  (d.clientY - 28) + "px");	
 
                         d3.select(this).style("opacity", 1)
                     })					
                     .on("mouseout", function(d) {		
-                        // div.transition()		
-                        //     .duration(500)		
-                        //     .style("opacity", 0);	
+                        tooltip.transition()		
+                            .duration(500)		
+                            .style("opacity", 0);	
                         d3.select(this).style("opacity", 0.3)
                     })
         }

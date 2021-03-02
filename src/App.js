@@ -47,7 +47,7 @@ class App extends Component {
 
             <div style={{ 
                 backgroundColor: "black",
-                height         : "100%",
+                // height         : "100%",
                 display        : "flex",
                 justifyContent : "center"
             }}>
@@ -57,7 +57,7 @@ class App extends Component {
             {/* 😚 Container of the elements ! */}
             <div style={{ 
                 backgroundColor: "#0e0e0e",
-                height         : "100%",
+                // height         : "100%",
                 width          : "1000px",
                 display        : "flex",
                 flexDirection  : "column",
@@ -94,7 +94,8 @@ class App extends Component {
                     </Route>
                     <Route path="/table">
                         <div>
-                        <TableContainer columns={this.columns} data={this.data} />
+                        {/* <TableContainer columns={this.columns} data={this.data} /> */}
+                        <TableContainer columns={this.columns} data={data_test} />
                         </div>
                     </Route>
                 </Switch>
@@ -137,22 +138,23 @@ class App extends Component {
     {
 
         this.columns = [
-            {
-                Header: "Details",
-                columns: [
-                    { Header: "Name", accessor: "show.name", },
-                    { Header: "Language", accessor: "show.language", },
-                    {
-                        Header: "Genre(s)",
-                        accessor: "show.genres",
-                        Cell: ({ cell: { value } }) => (
-                            <Genres values={value} />
-                        ),
-                    },
-                    { Header: "Runtime", accessor: "show.runtime", },
-                    { Header: "Status", accessor: "show.status", },
-                ],
-            },
+            // {
+            //     Header: "Details",
+            //     columns: [
+                    { Header: "Name", accessor: "name", },
+                    { Header: "Stars", accessor: "stargazers_count", },
+                    { Header: "Language", accessor: "language", },
+                    // {
+                    //     Header: "Genre(s)",
+                    //     accessor: "show.genres",
+                    //     Cell: ({ cell: { value } }) => (
+                    //         <Genres values={value} />
+                    //     ),
+                    // },
+                    // { Header: "Runtime", accessor: "show.runtime", },
+                    // { Header: "Status", accessor: "show.status", },
+            //     ],
+            // },
         ];
 
         this.data = [
@@ -217,12 +219,12 @@ class App extends Component {
 
     }
 
-    componentDidMount()
+    async componentDidMount()
     {
 
         eva.replace()
 
-        this.setState({list_of_starred: data_test})
+        // this.setState({list_of_starred: data_test})
 
         const get_repos = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
@@ -231,6 +233,7 @@ class App extends Component {
                 return {
                     id              : x.id,
                     name            : x.name,
+                    fullname        : x.fullname,
                     html_url        : x.html_url,
                     stargazers_count: x.stargazers_count,
                     language        : x.language,
@@ -248,6 +251,18 @@ class App extends Component {
                 }
             })
             .then((res) => res.data)
+
+        let extracted = ""
+        
+        extracted = await get_repos("egeres", 1).then(x => {console.log(x); return x})
+        console.log(extracted)
+
+        // extracted = get_repos("egeres", 1000)
+        get_repos("egeres", 1000).then(x => {extracted = x})
+        console.log(extracted)
+
+
+        this.setState({list_of_starred: data_test})
         
         // get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
 

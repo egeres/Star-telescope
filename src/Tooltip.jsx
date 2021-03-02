@@ -18,6 +18,7 @@ export default class Tooltip extends Component {
             backgroundColor: "#313131",
             left           : 200,
             top            : 200,
+            opacity        : 0,
             // width         : "100%",
             // display       : "flex",
             // flexGrow      : 1,

@@ -63,3 +63,8 @@ hr
   border-style: solid;
   border-color: #343434;
 }
+
+#Tooltip
+{
+  pointer-events: none;
+}

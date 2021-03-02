@@ -99,9 +99,9 @@ export default class Header extends Component {
 
         user_profileinfo(this.props.user).then(
             (res) => {
-                console.log("asdadsads");
-                console.log(res);
-                console.log(res.avatar_url)
+                // console.log("asdadsads");
+                // console.log(res);
+                // console.log(res.avatar_url)
                 this.setState({ user_profilepic: res.avatar_url})
             }
         );
