@@ -31,11 +31,14 @@ export default function Table({ columns, data }) {
     <>
 
       <input
-        value={filterInput}
-        onChange={handleFilterChange}
-        placeholder={"Search name"}
+        class       = "rounded_input"
+        value       = {filterInput}
+        onChange    = {handleFilterChange}
+        placeholder = {"Repo name ✨"}
       />
       
+      <div class="element_spacer"></div>
+
       <table {...getTableProps()}>
 
         <thead>

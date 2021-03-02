@@ -18,11 +18,12 @@ td, th {
 }
 
 .badge {
-  background-color: rgb(2, 179, 150);
-  margin: 10px;
-  border-radius: 300px;
-  padding-right: 10px;
-  padding-left: 10px;
+  background-color: rgb(36, 36, 36);
+  margin          : 5px;
+  border-radius   : 300px;
+  padding-right   : 10px;
+  padding-left    : 10px;
+  display: inline-block;
 }
 
 body {
@@ -67,4 +68,19 @@ hr
 #Tooltip
 {
   pointer-events: none;
+}
+
+table {
+  width: 100%;
+}
+
+.rounded_input
+{
+  width           : 50%;
+  /* height          : 30px; */
+  font-size: 20px;
+  background-color: #343434;
+  border          : None;
+  color           : white;
+  padding         : 5px;
 }

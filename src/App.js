@@ -32,7 +32,8 @@ import {
 import { useState, useEffect } from "react";
 import { random } from "animejs";
 
-import data_test from "./data_test.js";
+// import data_test from "./data_test.js";
+import data_test from "./data_test_topics.js";
 
 class App extends Component {
     constructor(props) {
@@ -49,22 +50,26 @@ class App extends Component {
                 backgroundColor: "black",
                 // height         : "100%",
                 display        : "flex",
-                justifyContent : "center"
+                justifyContent : "center",
+                minHeight         : "100%",
             }}>
             
-            <div class="element_spacer"></div>
+            {/* <div class="element_spacer"></div> */}
 
             {/* 😚 Container of the elements ! */}
             <div style={{ 
                 backgroundColor: "#0e0e0e",
+                // backgroundColor: "red",
                 // height         : "100%",
-                width          : "1000px",
-                display        : "flex",
-                flexDirection  : "column",
-                alignItems     : "center",
+                minHeight    : "100%",
+                width        : "1000px",
+                display      : "flex",
+                flexDirection: "column",
+                alignItems   : "center",
             }}>
                 <Tooltip></Tooltip>
 
+                <div class="element_spacer"></div>
 
                 <Header user="egeres"></Header>
 
@@ -84,19 +89,23 @@ class App extends Component {
                 <Switch>
                     <Route exact path="/"> 
                     <div>
+                        Distribution of starred repos
                         <Display_simple_graph 
                         data   = {this.extract_star_count(this.state.list_of_starred)}
                         width  = {1000}
                         height = {300 }
                         margin = {50  }
                         />
+                        <div class="element_spacer"></div>
+                        asdadsads
                     </div> 
                     </Route>
                     <Route path="/table">
-                        <div>
+                        {/* <div> */}
                         {/* <TableContainer columns={this.columns} data={this.data} /> */}
+                        {/* <TableContainer columns={this.columns} data={this.state.list_of_starred} /> */}
                         <TableContainer columns={this.columns} data={data_test} />
-                        </div>
+                        {/* </div> */}
                     </Route>
                 </Switch>
                 </Router>
@@ -144,13 +153,13 @@ class App extends Component {
                     { Header: "Name", accessor: "name", },
                     { Header: "Stars", accessor: "stargazers_count", },
                     { Header: "Language", accessor: "language", },
-                    // {
-                    //     Header: "Genre(s)",
-                    //     accessor: "show.genres",
-                    //     Cell: ({ cell: { value } }) => (
-                    //         <Genres values={value} />
-                    //     ),
-                    // },
+                    {
+                        Header: "Topics",
+                        accessor: "topics",
+                        Cell: ({ cell: { value } }) => (
+                            <Genres values={value} />
+                        ),
+                    },
                     // { Header: "Runtime", accessor: "show.runtime", },
                     // { Header: "Status", accessor: "show.status", },
             //     ],
@@ -233,7 +242,7 @@ class App extends Component {
                 return {
                     id              : x.id,
                     name            : x.name,
-                    fullname        : x.fullname,
+                    full_name       : x.full_name,
                     html_url        : x.html_url,
                     stargazers_count: x.stargazers_count,
                     language        : x.language,
@@ -252,15 +261,33 @@ class App extends Component {
             })
             .then((res) => res.data)
 
-        let extracted = ""
+
+
         
-        extracted = await get_repos("egeres", 1).then(x => {console.log(x); return x})
-        console.log(extracted)
-
-        // extracted = get_repos("egeres", 1000)
-        get_repos("egeres", 1000).then(x => {extracted = x})
-        console.log(extracted)
-
+        if (false)
+        {
+            let extracted = ""
+            
+            extracted = await get_repos("egeres", 1).then(x => {console.log(x); return x})
+            // console.log(extracted)
+            
+            // extracted = get_repos("egeres", 1000)
+            // get_repos("egeres", 1000).then(x => {extracted = x})
+            // console.log(extracted)
+            
+            for await (let info_extracted of extracted)
+            {
+                // console.log(info_extracted);
+                
+                info_extracted.topics = await get_topics("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
+                info_extracted.topics = info_extracted.topics.names
+                
+                // console.log(info_extracted);
+            }
+            
+            console.log(extracted)
+        }
+        
 
         this.setState({list_of_starred: data_test})
         
@@ -280,7 +307,9 @@ const Genres = ({ values }) => {
             {values.map((genre, idx) => {
                 return (
                     <span key={idx} className="badge">
-                        {genre}
+                    {/* <nobr> */}
+                    {genre}
+                    {/* </nobr> */}
                     </span>
                 );
             })}
