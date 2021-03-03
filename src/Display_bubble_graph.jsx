@@ -8,6 +8,8 @@
 
 // https://www.d3indepth.com/force-layout/
 
+// https://bl.ocks.org/steveharoz/8c3e2524079a8c440df60c1ab72b5d03
+
 import React, { Component } from "react";
 import * as d3 from "d3";
 import { svg } from "d3";
@@ -21,6 +23,7 @@ export default class Display_bubble_graph extends Component
         this.margin = 0
         this.width  = 1000
         this.height = 1000
+        this.dataaa   = [{radius:20}]
     }
 
     render()
@@ -30,12 +33,14 @@ export default class Display_bubble_graph extends Component
 
     componentDidMount()
     {
+        console.log(this.props.data)
+        this.dataaa = [{radius:20}]
         this.draw()
     }
     
     componentDidUpdate()
     {
-        this.draw()
+        // this.draw()
     }
 
     draw()
@@ -152,16 +157,57 @@ export default class Display_bubble_graph extends Component
 
         }
 
-        if (this.props.data.length && false)
+        // if (this.props.data.length && true)
+        if (true)
         {
-            var width = 300, height = 300
-            var nodes = [{}, {}, {}, {}, {}]
-            // var nodes = []
+            // var width = 300, height = 300
+            var nodes = [
+                {radius:20},
+                {radius:20},
+                {radius:50},
+                {radius:100},
+                {radius:20},
+                {radius:20},
+                {radius:20}
+            ]
 
-            var simulation = d3.forceSimulation(nodes)
-                .force('charge', d3.forceManyBody())
-                .force('center', d3.forceCenter(width / 2, height / 2))
-                .on('tick', ticked)
+            // this.data = nodes
+            nodes = [
+                {radius:20},
+                {radius:20},
+            ]
+
+            nodes = [...this.props.data]
+
+            // var simulation = d3.forceSimulation(nodes)
+            //     .force('charge', d3.forceManyBody().strength(0).distanceMin(0).distanceMax(10)  )
+            //     .force('center', d3.forceCenter(this.props.width / 2, this.props.height / 2))
+            //     // .force('center', d3.forceCenter(100, 100))
+            //     // .force('collision', d3.forceCollide().radius(function(d) {
+            //     //     return d.radius
+            //     //   }))
+            //     //   .force('x', d3.forceX().x(function(d) {
+            //     //     return xCenter[d.category];
+            //     //   }))
+            //     .on('tick', ticked)
+
+            var attractForce = d3.forceManyBody().strength(90) //.distanceMax(400).distanceMin(60);
+            var repelForce   = d3.forceManyBody().strength(-140).distanceMax(50).distanceMin(10);
+            // var forcecollide = d3.forceCollide().radius(10)
+            var forcecollide = d3.forceCollide().radius(function(d) { return d.radius })
+
+            var simulation   = d3.forceSimulation(nodes)
+            // var simulation   = d3.forceSimulation(this.props.data)
+            // var simulation   = d3.forceSimulation(this.dataaa)
+
+            
+                .force('center',    d3.forceCenter(this.props.width / 2, this.props.height / 2))
+                // .alphaDecay(0.03)
+                .force("attractForce",attractForce)
+                // .force("repelForce",  repelForce)
+                // .force('collision', d3.forceCollide().radius(function(d) { return d.radius }))
+                .force("collision",forcecollide)
+                .on('tick', ticked);
 
             function ticked() {
 
@@ -170,17 +216,40 @@ export default class Display_bubble_graph extends Component
                 var u = svg
                     .selectAll('circle')
                     .data(nodes)
-                
+                    // .data(this.props.data)
+                    // .data(this.dataaa)
+
+                    // this.props.data
+                // var elemEnter = u.enter()
+                //     .append("g")
+                //     // .attr("transform", function(d){return "translate("+d.x+",80)"})
+                //     .attr("transform", function(d){return "translate(10,10)"})
+ 
+
                 u.enter()
                     .append('circle')
-                    .attr('r', 5)
+                    // .attr('r', 20)
+                    // .attr('r',  function(d) {return Math.random() * 50 + 5})
+                    .attr('r',  function(d) {return d.radius})
+                    .style("fill", "#e62424")
+                    .style("stroke", "gray")
+                    .style("stroke-width", 3)
                     .merge(u)
-                    .attr('cx', function(d) {
-                    return d.x
-                    })
-                    .attr('cy', function(d) {
-                    return d.y
-                    })
+                    .attr('cx', function(d) {return d.x})
+                    .attr('cy', function(d) {return d.y})
+
+                    // svg.selectAll('circle')
+                    // u.enter()
+                    // // .enter()
+                    // .append('circle')
+                    // .attr('r', 20)
+                    // .style("fill", "#4024e6")
+
+                // svg
+                //     .selectAll("textCircle")
+                //     .data(nodes)
+                //     .enter()
+                //     .append("text")
                 
                 u.exit().remove()
             };

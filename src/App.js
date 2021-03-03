@@ -91,26 +91,26 @@ class App extends Component {
                     <Route exact path="/"> 
                     <div>
 
-                        Distribution of starred repos
-                        <Display_simple_graph 
+                        
+                        {/* <h3>Distribution of starred repos</h3> */}
+                        {/* <Display_simple_graph 
                         data   = {this.extract_star_count(this.state.list_of_starred)}
                         width  = {1000}
                         height = {300 }
                         margin = {50  }
-                        />
+                        /> */}
 
                         <div class="element_spacer"></div>
-                        {/* <Display_bubble_graph
+                        <Display_bubble_graph
                         data   = {[
-                            {name:"A", density:10},
-                            {name:"B", density:30},
-                            {name:"C", density:90},
+                            {name:"A", radius:10},
+                            {name:"B", radius:30},
+                            {name:"C", radius:90},
                         ]}
                         width  = {1000}
-                        height = {300 }
+                        height = {1000 }
                         margin = {50  }
-                        /> */}
-                        asdadsads
+                        />
                     </div> 
                     </Route>
                     <Route path="/table">
