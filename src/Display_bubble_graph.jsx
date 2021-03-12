@@ -164,7 +164,7 @@ export default class Display_bubble_graph extends Component
             // var nodes = [...this.props.data]
             // var copy_of_data = [...this.props.data]
 
-            console.log("this props data", this.props.data)
+            // console.log("this props data", this.props.data)
 
             let copy_of_data = {}
             copy_of_data = Object.assign({}, this.props.data)
@@ -181,7 +181,7 @@ export default class Display_bubble_graph extends Component
             //     {name:"text",   radius:40 },
             //     {name:"aaa",    radius:0  },
             // ]
-            console.log("copy_of_data", copy_of_data)
+            // console.log("copy_of_data", copy_of_data)
 
             var nodes = []
 
@@ -237,16 +237,8 @@ export default class Display_bubble_graph extends Component
                 .append('circle')
                 .attr('r',  function(d) {return d.radius})
                 .style("fill", "#e62424")
-                .style("stroke", "gray")
-                .style("stroke-width", 3)
-
-            // var squares = g
-            //     .append('rect')
-            //     .attr('x',  0)
-            //     .attr('y',  0)
-            //     .attr('width',  50)
-            //     .attr('height',  50)
-            //     .style("fill", "#e6A424")
+                // .style("stroke", "#343434")
+                // .style("stroke-width", 3)
 
             var texts = g
                 .append("text")
@@ -256,7 +248,6 @@ export default class Display_bubble_graph extends Component
                 .style("fill", "#e6e2e2e2")
                 .attr("dy", ".35em")
                 .text(function(d) { return d.name; });
-                // .text(function(d) { return "asdasd"});
 
             var simulation   = d3.forceSimulation(nodes)
                 .alphaDecay(0.03)
@@ -287,7 +278,7 @@ Display_bubble_graph.propTypes = {
     width : PropTypes.number,
     height: PropTypes.number,
     margin: PropTypes.number,
-    data  : PropTypes.array,
+    data  : PropTypes.object,
 };
 
 Display_bubble_graph.defaultProps = {

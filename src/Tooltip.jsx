@@ -37,7 +37,7 @@ export default class Tooltip extends Component {
 }
 
 Tooltip.propTypes = {
-    content_text : PropTypes.number,
+    content_text : PropTypes.string,
 };
 
 Tooltip.defaultProps = {

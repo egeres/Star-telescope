@@ -10,6 +10,8 @@ import * as eva from "eva-icons";
 
 import * as cheerio from 'cheerio';
 
+import Cookies from 'js-cookie'
+
 // import TableContainer from "./TableContainer"
 // https://thewidlarzgroup.com/react-table-7/
 // https://github.com/TheWidlarzGroup/RT7-example/blob/102c5bbfddf9e01e556b84e81de51ef2cef3ba5e/src/App.js
@@ -74,10 +76,13 @@ class App extends Component {
 
         const state_toggle_mute = () =>
         {
-            console.log("Toggling...", this.state.muted)
+            // console.log("Toggling...", this.state.muted)
             // if (this.state.muted) { this.setState({muted: false}) }
             // else                  { this.setState({muted: true }) }
-            this.setState(prev_state => ({muted: !prev_state.muted}))
+            this.setState(
+                prev_state => ({muted: !prev_state.muted}), 
+                ()         => {Cookies.set('muted', this.state.muted.toString()); console.log("Toggled !...", this.state.muted.toString()) }
+            )
         }
 
         // function render_volume_state()
@@ -106,7 +111,7 @@ class App extends Component {
                 minHeight         : "100%",
             }}>
             
-            {/* <div class="element_spacer"></div> */}
+            {/* <div className="element_spacer"></div> */}
 
             {/* 😚 Container of the elements ! */}
             <div style={{ 
@@ -121,18 +126,18 @@ class App extends Component {
             }}>
                 <Tooltip></Tooltip>
 
-                <div class="element_spacer"></div>
+                <div className="element_spacer"></div>
 
                 {/* <Header user="egeres"></Header> */}
 
                 <Router>
                 <nav>
                     <div style={{display:"flex"}}>
-                        <Link to="/"      class="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
+                        <Link to="/"      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
                         <p>-</p>
-                        <Link to="/table" class="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
+                        <Link to="/table" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
                         {/* <p>-</p>
-                        <Link to="/users" class="link_router">Users</Link> */}
+                        <Link to="/users" className="link_router">Users</Link> */}
 
                         {/* {
                             if (true) { return <a> </a>}
@@ -157,7 +162,7 @@ class App extends Component {
                     </div>
                 </nav>
 
-                <div class="element_spacer"></div>
+                <div className="element_spacer"></div>
 
                 <Switch>
                     <Route exact path="/">
@@ -321,9 +326,13 @@ class App extends Component {
     async componentDidMount()
     {
 
+        // Call to update eva icons
         eva.replace()
 
-        const get_repos = (user, page=0) => axios
+        // We set the variables stored in the cookies
+        this.setState(prev_state => ({muted: Cookies.get('muted') === 'true'}))
+
+        const get_repos_API = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
             .then(res => res.data)
             .then(res => res.map(x => {
@@ -376,7 +385,7 @@ class App extends Component {
             // We first get a full list of all the repositories
             for (let page = 0; page < 99999; page++)
             {
-                extracted = await get_repos("egeres", page).then(x => {return x})
+                extracted = await get_repos_API("egeres", page).then(x => {return x})
                 if (extracted.length === 0) { break; }
                 else                        { list_of_repos += extracted; }
             }
@@ -384,8 +393,9 @@ class App extends Component {
             // Secondly, we proceed to extract the different topics present on the repo
             for await (let info_extracted of list_of_repos)
             {                
-                info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
-                info_extracted.topics = info_extracted.topics.names
+                // info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
+                // info_extracted.topics = info_extracted.topics.names
+                // info_extracted.topics = []
             }
         }
 
@@ -423,7 +433,7 @@ class App extends Component {
 // }
 
 const Button_toggle_sound = (props) => {
-    console.log("props", props)
+    // console.log("props", props)
 
     // useEffect(() => {
     //     eva.replace()
