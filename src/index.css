@@ -84,3 +84,5 @@ table {
   color           : white;
   padding         : 5px;
 }
+
+.hidden { display:none; }

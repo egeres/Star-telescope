@@ -4,8 +4,11 @@ import "./App.css";
 import React, { Component } from "react";
 import axios from "axios";
 
+
 import anime from "animejs/lib/anime.es.js";
 import * as eva from "eva-icons";
+
+import * as cheerio from 'cheerio';
 
 // import TableContainer from "./TableContainer"
 // https://thewidlarzgroup.com/react-table-7/
@@ -36,16 +39,63 @@ import { random } from "animejs";
 // import data_test from "./data_test.js";
 import data_test from "./data_test_topics.js";
 
+// axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
+
+
 class App extends Component {
-    constructor(props) {
+
+    constructor(props)
+    {
         super(props);
         this.state = {
             list_of_starred          : [],
             distribution_of_languages: {},
+            muted                    : true,
         };
     }
 
-    render() {
+    // state_toggle_mute()
+    // {
+    //     console.log("Toggling...", this.state.muted)
+    //     // if (this.state.muted) { this.setState({muted: false}) }
+    //     // else                  { this.setState({muted: true }) }
+    //     this.setState(prev_state => ({muted: !prev_state.muted}))
+    // }
+
+    // state_toggle_mute(context)
+    // {
+    //     if (context.state.muted) { context.setState({muted: false}) }
+    //     else                     { context.setState({muted: true }) }
+    // }
+
+    render()
+    {
+        let audio_pop = new Audio("/pop_0.mp3");
+
+        const state_toggle_mute = () =>
+        {
+            console.log("Toggling...", this.state.muted)
+            // if (this.state.muted) { this.setState({muted: false}) }
+            // else                  { this.setState({muted: true }) }
+            this.setState(prev_state => ({muted: !prev_state.muted}))
+        }
+
+        // function render_volume_state()
+        // {
+        //     console.log("Renderig...")
+        //     if (this.state.muted) { return ( <div onClick={this.state.state_toggle_mute()} > <i data-eva="volume-off-outline"  fill="#343434"></i> </div> ) }
+        //     else                  { return ( <div onClick={this.state.state_toggle_mute()} > <i data-eva="volume-up-outline"   fill="#343434"></i> </div> ) }
+        // }
+
+        // const render_volume_state = () =>
+        // {
+        //     console.log("Renderig...", this)
+        //     return ( <h1>asd</h1>)
+        //     // return ( <h1>{context.sate.muted}</h1>)
+        //     // if (context.state.muted) { return ( <div onClick={context.state_toggle_mute()} > <i data-eva="volume-off-outline"  fill="#343434"></i> </div> ) }
+        //     // else                     { return ( <div onClick={context.state_toggle_mute()} > <i data-eva="volume-up-outline"   fill="#343434"></i> </div> ) }
+        // }
+
         return (
 
             <div style={{ 
@@ -73,51 +123,71 @@ class App extends Component {
 
                 <div class="element_spacer"></div>
 
-                <Header user="egeres"></Header>
+                {/* <Header user="egeres"></Header> */}
 
                 <Router>
                 <nav>
                     <div style={{display:"flex"}}>
-                        <Link to="/"      class="link_router">Overview</Link>
+                        <Link to="/"      class="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
                         <p>-</p>
-                        <Link to="/table" class="link_router">Table</Link>
+                        <Link to="/table" class="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
                         {/* <p>-</p>
                         <Link to="/users" class="link_router">Users</Link> */}
+
+                        {/* {
+                            if (true) { return <a> </a>}
+                        } */}
+
+                        {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute}></Button_toggle_sound> */}
+                        {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute.bind(this)}></Button_toggle_sound> */}
+                        {/* <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound> */}
+                        <div onClick={() => state_toggle_mute()}>
+                            <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound>
+                        </div>
+
+                        {/* <p onClick={this.state_toggle_mute()} >asdasdads</p> */}
+                        {/* <p onClick={() => state_toggle_mute()} >asdasdads</p> */}
+
+
+                        {/* {render_volume_state.bind(this)} */}
+                        {/* {render_volume_state(this)} */}
+
+                        {/* <i data-eva="volume-up-outline" fill="#343434"></i>
+                        <i data-eva="volume-off-outline" fill="#343434"></i> */}
                     </div>
                 </nav>
 
                 <div class="element_spacer"></div>
 
                 <Switch>
-                    <Route exact path="/"> 
-                        <div>
+                    <Route exact path="/">
+
+                        <div style={{
+                            display:"flex"
+                        }}>
 
                             
                             {/* <h3>Distribution of starred repos</h3> */}
                             <Display_simple_graph 
                             data   = {this.extract_star_count(this.state.list_of_starred)}
-                            width  = {1000}
-                            height = {300 }
+                            width  = {500}
+                            height = {500}
                             margin = {50  }
                             />
 
-                            <div class="element_spacer"></div>
+                            {/* <div class="element_spacer"></div> */}
 
                             <Display_bubble_graph
                             // data   = {[
                             //     {name:"A BBBB", radius:100},
                             //     {name:"B BBBB", radius:30},
-                            //     {name:"C BBBB", radius:90},
-                            //     {name:"C BBBB", radius:90},
-                            //     {name:"C BBBB", radius:30},
-                            //     {name:"C BBBB", radius:30},
-                            //     {name:"C BBBB", radius:30},
                             // ]}
                             data   = {this.state.distribution_of_languages}
-                            width  = {1000}
-                            height = {1000 }
+                            width  = {500}
+                            height = {500}
                             margin = {50  }
                             />
+
                         </div> 
                     </Route>
                     <Route path="/table">
@@ -253,8 +323,6 @@ class App extends Component {
 
         eva.replace()
 
-        // this.setState({list_of_starred: data_test})
-
         const get_repos = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
             .then(res => res.data)
@@ -272,7 +340,7 @@ class App extends Component {
                 }
             ))
 
-        const get_topics = (url) => axios
+        const get_topics_API = (url) => axios
             .get(url, {
                 headers: {
                     "Content-Type": "application/json",
@@ -281,32 +349,52 @@ class App extends Component {
             })
             .then((res) => res.data)
 
+        const get_topics_scrapping = (url) => axios
+            .get(url, {
+                headers: {
+                    'Content-Type': 'text/plain',
+                }
+            })
+            .then(
+                (res)   => { if(res.status === 200) { return res.data } },
+                (error) => { console.log(error)}
+            )
+            // .then((html) => {
+            //     let $ = cheerio.load(html);
+            //     return $(".topic-tag")
+            //     // topic-tag
+            // })
+            
 
+        let list_of_repos = []
 
-        
         if (false)
         {
             let extracted = ""
             
-            extracted = await get_repos("egeres", 1).then(x => {console.log(x); return x})
-            // console.log(extracted)
-            
-            // extracted = get_repos("egeres", 1000)
-            // get_repos("egeres", 1000).then(x => {extracted = x})
-            // console.log(extracted)
-            
-            for await (let info_extracted of extracted)
+            // A while loop would be better tho
+            // We first get a full list of all the repositories
+            for (let page = 0; page < 99999; page++)
             {
-                // console.log(info_extracted);
-                
-                info_extracted.topics = await get_topics("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
-                info_extracted.topics = info_extracted.topics.names
-                
-                // console.log(info_extracted);
+                extracted = await get_repos("egeres", page).then(x => {return x})
+                if (extracted.length === 0) { break; }
+                else                        { list_of_repos += extracted; }
             }
-            
-            console.log(extracted)
+
+            // Secondly, we proceed to extract the different topics present on the repo
+            for await (let info_extracted of list_of_repos)
+            {                
+                info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
+                info_extracted.topics = info_extracted.topics.names
+            }
         }
+
+        // let coso = await get_topics_scrapping("https://github.com/cheeriojs/cheerio")
+        // let coso = await get_topics_scrapping("https://dev.to/aurelkurtula")
+        // console.log(coso)
+
+        console.log("Finished extracting information from user...")
+        console.log(list_of_repos)
         
 
         this.setState({list_of_starred: data_test})
@@ -317,10 +405,6 @@ class App extends Component {
             if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
             else                         { tmp[repo.language]++;  }
         }
-        // distribution_of_languages = tmp;
-        
-        console.log("tmp", tmp)
-
         this.setState({distribution_of_languages: tmp})
 
 
@@ -330,6 +414,39 @@ class App extends Component {
 
 		// https://api.github.com/users/karpathy
     }
+}
+
+// const Button_toggle_sound = (props) => {
+//     console.log(props)
+//     if (props.onoroff) { return ( <div onClick={props.onClick} > <i data-eva="volume-off-outline"  fill="#343434"></i> </div> ) }
+//     else               { return ( <div onClick={props.onClick} > <i data-eva="volume-up-outline"   fill="#343434"></i> </div> ) }
+// }
+
+const Button_toggle_sound = (props) => {
+    console.log("props", props)
+
+    // useEffect(() => {
+    //     eva.replace()
+    // }, []);
+
+    // if (props.onoroff) { return ( <i data-eva="volume-off-outline"  fill="#343434"></i> ) }
+    // else               { return ( <i data-eva="volume-up-outline"   fill="#343434"></i> ) }
+
+    // if (props.onoroff) { return ( <i>AAAAA</i> ) }
+    // else               { return ( <i>BBBBB</i> ) }
+
+    // let kjasndkjnad = "volume-off-outline"
+    // if (props.onoroff) { kjasndkjnad = "volume-up-outline" }
+    // return ( <i data-eva={kjasndkjnad} fill="#343434"></i> )
+
+    // eva.replace()
+
+    return (
+        <div>
+            <div className={props.onoroff ? '' : 'hidden'}> <i  data-eva="volume-off-outline" fill="#343434"></i> </div>
+            <div className={props.onoroff ? 'hidden' : ''}> <i  data-eva="volume-up-outline"  fill="#343434"></i> </div>
+        </div>
+        )
 }
 
 // Custom component to render Genres
