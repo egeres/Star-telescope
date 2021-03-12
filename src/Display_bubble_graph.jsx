@@ -41,7 +41,7 @@ export default class Display_bubble_graph extends Component
     
     componentDidUpdate()
     {
-        // this.draw()
+        this.draw()
     }
 
     draw()
@@ -161,7 +161,68 @@ export default class Display_bubble_graph extends Component
         // if (this.props.data.length && true)
         if (true)
         {
-            var nodes = [...this.props.data]
+            // var nodes = [...this.props.data]
+            // var copy_of_data = [...this.props.data]
+
+            console.log("this props data", this.props.data)
+
+            let copy_of_data = {}
+            copy_of_data = Object.assign({}, this.props.data)
+
+            // We parse from this format:
+            // {
+            //     "Python":10,
+            //     "text"  :4,
+            //     "aaa"   :0,
+            // }
+            // To this other format:
+            // [
+            //     {name:"Python", radius:100},
+            //     {name:"text",   radius:40 },
+            //     {name:"aaa",    radius:0  },
+            // ]
+            console.log("copy_of_data", copy_of_data)
+
+            var nodes = []
+
+            if (Object.entries(copy_of_data).length !== 0)
+            {
+                // let max_value = Math.max(copy_of_data.values())
+                // let min_value = Math.min(copy_of_data.values())
+
+                var vals = Object.keys(copy_of_data).map(function(key) {
+                    return copy_of_data[key];
+                });
+
+                let max_value = Math.max(...vals)
+                let min_value = Math.min(...vals)
+
+                function minmaxscale(value, benjamin, benjamax, outmin, outmax)
+                {
+                    let coso = ((value - benjamin)/benjamax) * (outmax - outmin) + outmin
+                    return coso
+                }
+
+                for (var key in copy_of_data)
+                {
+                    nodes.push({
+                        name:key,
+                        // radius:copy_of_data[key],
+                        radius: minmaxscale(
+                            copy_of_data[key],
+                            min_value,
+                            max_value,
+                            50,
+                            200,
+                        ),
+                    })
+                }
+
+            }
+
+
+
+
 
             var u = svg
                 .selectAll('g')
@@ -170,6 +231,7 @@ export default class Display_bubble_graph extends Component
             var g = u
                 .enter()
                 .append("g")
+                .attr('transform', function(d) { return "translate(-500, -500)" })
 
             var circles = g
                 .append('circle')
@@ -178,18 +240,28 @@ export default class Display_bubble_graph extends Component
                 .style("stroke", "gray")
                 .style("stroke-width", 3)
 
-            var squares = g
-                .append('rect')
-                .attr('x',  0)
-                .attr('y',  0)
-                .attr('width',  50)
-                .attr('height',  50)
-                .style("fill", "#e6A424")
+            // var squares = g
+            //     .append('rect')
+            //     .attr('x',  0)
+            //     .attr('y',  0)
+            //     .attr('width',  50)
+            //     .attr('height',  50)
+            //     .style("fill", "#e6A424")
+
+            var texts = g
+                .append("text")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("text-anchor", "middle")
+                .style("fill", "#e6e2e2e2")
+                .attr("dy", ".35em")
+                .text(function(d) { return d.name; });
+                // .text(function(d) { return "asdasd"});
 
             var simulation   = d3.forceSimulation(nodes)
                 .alphaDecay(0.03)
                 .force('center',       d3.forceCenter(this.props.width / 2, this.props.height / 2))
-                .force("attractForce", d3.forceManyBody().strength(90))
+                .force("attractForce", d3.forceManyBody().strength(200))
                 .force("collision",    d3.forceCollide().radius(function(d) { return d.radius }))
                 .on('tick', ticked);
 

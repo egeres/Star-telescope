@@ -40,7 +40,8 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list_of_starred : [],
+            list_of_starred          : [],
+            distribution_of_languages: {},
         };
     }
 
@@ -89,29 +90,35 @@ class App extends Component {
 
                 <Switch>
                     <Route exact path="/"> 
-                    <div>
+                        <div>
 
-                        
-                        {/* <h3>Distribution of starred repos</h3> */}
-                        {/* <Display_simple_graph 
-                        data   = {this.extract_star_count(this.state.list_of_starred)}
-                        width  = {1000}
-                        height = {300 }
-                        margin = {50  }
-                        /> */}
+                            
+                            {/* <h3>Distribution of starred repos</h3> */}
+                            <Display_simple_graph 
+                            data   = {this.extract_star_count(this.state.list_of_starred)}
+                            width  = {1000}
+                            height = {300 }
+                            margin = {50  }
+                            />
 
-                        <div class="element_spacer"></div>
-                        <Display_bubble_graph
-                        data   = {[
-                            {name:"A", radius:10},
-                            {name:"B", radius:30},
-                            {name:"C", radius:90},
-                        ]}
-                        width  = {1000}
-                        height = {1000 }
-                        margin = {50  }
-                        />
-                    </div> 
+                            <div class="element_spacer"></div>
+
+                            <Display_bubble_graph
+                            // data   = {[
+                            //     {name:"A BBBB", radius:100},
+                            //     {name:"B BBBB", radius:30},
+                            //     {name:"C BBBB", radius:90},
+                            //     {name:"C BBBB", radius:90},
+                            //     {name:"C BBBB", radius:30},
+                            //     {name:"C BBBB", radius:30},
+                            //     {name:"C BBBB", radius:30},
+                            // ]}
+                            data   = {this.state.distribution_of_languages}
+                            width  = {1000}
+                            height = {1000 }
+                            margin = {50  }
+                            />
+                        </div> 
                     </Route>
                     <Route path="/table">
                         {/* <div> */}
@@ -303,7 +310,20 @@ class App extends Component {
         
 
         this.setState({list_of_starred: data_test})
+
+        let tmp = {};
+        for await (let repo of data_test)
+        {
+            if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
+            else                         { tmp[repo.language]++;  }
+        }
+        // distribution_of_languages = tmp;
         
+        console.log("tmp", tmp)
+
+        this.setState({distribution_of_languages: tmp})
+
+
         // get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
 
         // https://api.github.com/repos/serengil/deepface/topics
