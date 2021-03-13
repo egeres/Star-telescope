@@ -212,8 +212,8 @@ export default class Display_bubble_graph extends Component
                             copy_of_data[key],
                             min_value,
                             max_value,
-                            50,
-                            200,
+                            13,
+                            90,
                         ),
                     })
                 }

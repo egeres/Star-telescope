@@ -23,7 +23,7 @@ import Display_simple_graph from "./Display_simple_graph.jsx";
 import Display_bubble_graph from "./Display_bubble_graph.jsx";
 import Tooltip from "./Tooltip.jsx";
 
-
+import Data_digitize from "./data_from_arrayofvalues_to_listofcounts.js";
 
 import {
 	BrowserRouter as Router,
@@ -39,7 +39,8 @@ import { useState, useEffect } from "react";
 import { random } from "animejs";
 
 // import data_test from "./data_test.js";
-import data_test from "./data_test_topics.js";
+// import data_test from "./data_test_topics.js";
+import data_test from "./data_test_full.js";
 
 // axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
 
@@ -53,6 +54,7 @@ class App extends Component {
             list_of_starred          : [],
             distribution_of_languages: {},
             muted                    : true,
+            max_scrapping_pages      : 2,
         };
     }
 
@@ -74,6 +76,10 @@ class App extends Component {
     {
         let audio_pop = new Audio("/pop_0.mp3");
 
+        // this.max_scrapping_pages = 2;
+
+        
+
         const state_toggle_mute = () =>
         {
             // console.log("Toggling...", this.state.muted)
@@ -84,6 +90,20 @@ class App extends Component {
                 ()         => {Cookies.set('muted', this.state.muted.toString()); console.log("Toggled !...", this.state.muted.toString()) }
             )
         }
+
+        // console.log(
+        //     this.state.list_of_starred.map(x => x.stargazers_count)
+        // )
+        // console.log(
+        //     Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 5000)
+        //     .filter(x => !isNaN(x))
+        // )
+        // console.log(
+        //     "asdadsd",
+        //     Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 5000)
+        //     .filter(x => !isNaN(x))
+        //     .map((v, i) => {return {"x":i, "y":v}})
+        // )
 
         // function render_volume_state()
         // {
@@ -128,14 +148,15 @@ class App extends Component {
 
                 <div className="element_spacer"></div>
 
-                {/* <Header user="egeres"></Header> */}
+                <Header user="egeres"></Header>
 
                 <Router>
                 <nav>
-                    <div style={{display:"flex"}}>
+                    <div style={{display:"flex", justifyContent:"center", backgroundColor:"transparent", alignItems:"center"}}>
                         <Link to="/"      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
                         <p>-</p>
                         <Link to="/table" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
+                        <p>-</p>
                         {/* <p>-</p>
                         <Link to="/users" className="link_router">Users</Link> */}
 
@@ -146,7 +167,7 @@ class App extends Component {
                         {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute}></Button_toggle_sound> */}
                         {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute.bind(this)}></Button_toggle_sound> */}
                         {/* <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound> */}
-                        <div onClick={() => state_toggle_mute()}>
+                        <div onClick={() => state_toggle_mute()} style={{margin:"10px"}}>
                             <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound>
                         </div>
 
@@ -174,7 +195,18 @@ class App extends Component {
                             
                             {/* <h3>Distribution of starred repos</h3> */}
                             <Display_simple_graph 
-                            data   = {this.extract_star_count(this.state.list_of_starred)}
+                            // data   = {this.extract_star_count(this.state.list_of_starred)}
+                            // data   = {Data_digitize(this.extract_star_count(this.state.list_of_starred), 100)}
+                            // data   = {Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 100)}
+                            // data   = {Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 5000).map((v, i) => {return {x:i, y:v}})}
+                            // data   = {[{x:0, y:0}, {x:10, y:10}, {x:20, y:20}]}
+                            data = {
+                                Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
+                                .filter(x => !isNaN(x))
+                                .map((v, i) => {return {"x":i, "y":v}})
+                            }
+
+                            
                             width  = {500}
                             height = {500}
                             margin = {50  }
@@ -332,6 +364,8 @@ class App extends Component {
         // We set the variables stored in the cookies
         this.setState(prev_state => ({muted: Cookies.get('muted') === 'true'}))
 
+        if (this.state.max_scrapping_pages != 99999) { console.log("Warning 🤔"); console.log("max_scrapping_pages set to", this.state.max_scrapping_pages)}
+
         const get_repos_API = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
             .then(res => res.data)
@@ -344,6 +378,8 @@ class App extends Component {
                     stargazers_count: x.stargazers_count,
                     language        : x.language,
                     created_at      : x.created_at,
+                    forks_count     : x.forks_count,
+                    description     : x.description,
                     topics          : null,
                 }
                 }
@@ -379,21 +415,22 @@ class App extends Component {
 
         if (false)
         {
-            let extracted = ""
+            let extracted = []
             
             // A while loop would be better tho
             // We first get a full list of all the repositories
-            for (let page = 0; page < 99999; page++)
+            for (let page = 0; page < this.state.max_scrapping_pages; page++)
             {
+                console.log("Extracting page", page, "...")
                 extracted = await get_repos_API("egeres", page).then(x => {return x})
                 if (extracted.length === 0) { break; }
-                else                        { list_of_repos += extracted; }
+                else                        { list_of_repos = list_of_repos.concat(extracted); }
             }
 
             // Secondly, we proceed to extract the different topics present on the repo
             for await (let info_extracted of list_of_repos)
             {                
-                // info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
+                info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
                 // info_extracted.topics = info_extracted.topics.names
                 // info_extracted.topics = []
             }
@@ -403,11 +440,13 @@ class App extends Component {
         // let coso = await get_topics_scrapping("https://dev.to/aurelkurtula")
         // console.log(coso)
 
-        console.log("Finished extracting information from user...")
-        console.log(list_of_repos)
-        
+        list_of_repos = data_test
 
-        this.setState({list_of_starred: data_test})
+        for await (let info_extracted of list_of_repos) { if (info_extracted.topics === null) { info_extracted.topics = [] } }
+
+        console.log("Finished extracting information from user...", list_of_repos)        
+
+        this.setState({list_of_starred: list_of_repos})
 
         let tmp = {};
         for await (let repo of data_test)
@@ -453,8 +492,8 @@ const Button_toggle_sound = (props) => {
 
     return (
         <div>
-            <div className={props.onoroff ? '' : 'hidden'}> <i  data-eva="volume-off-outline" fill="#343434"></i> </div>
-            <div className={props.onoroff ? 'hidden' : ''}> <i  data-eva="volume-up-outline"  fill="#343434"></i> </div>
+            <div className={props.onoroff ? 'display_flex' : 'display_hidden'}> <i  data-eva="volume-off-outline" fill="#343434"></i> </div>
+            <div className={props.onoroff ? 'display_hidden' : 'display_flex'}> <i  data-eva="volume-up-outline"  fill="#343434"></i> </div>
         </div>
         )
 }

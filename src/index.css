@@ -45,6 +45,7 @@ code {
   margin         : 10px;
   color          : #343434;
   text-decoration: none;
+  font-size      : 20px;
 }
 
 .link_router:hover
@@ -85,4 +86,6 @@ table {
   padding         : 5px;
 }
 
-.hidden { display:none; }
+.display_hidden { display:none; }
+
+.display_flex { display: flex; }

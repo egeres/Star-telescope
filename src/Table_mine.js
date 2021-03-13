@@ -31,13 +31,13 @@ export default function Table({ columns, data }) {
     <>
 
       <input
-        class       = "rounded_input"
+        className   = "rounded_input"
         value       = {filterInput}
         onChange    = {handleFilterChange}
         placeholder = {"Repo name ✨"}
       />
       
-      <div class="element_spacer"></div>
+      <div className="element_spacer"></div>
 
       <table {...getTableProps()}>
 
