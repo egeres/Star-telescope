@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { useTable, useFilters, useSortBy } from "react-table";
 
 export default function Table({ columns, data }) {
-  const [filterInput, setFilterInput] = useState("");
+
+  const [ filterInput,         setFilterInput         ] = useState("");
+  const [ filterInputName,     setFilterInputName     ] = useState("");
+  const [ filterInputMinstars, setFilterInputMinstars ] = useState("");
+
+
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -26,6 +31,18 @@ export default function Table({ columns, data }) {
     setFilterInput(value);
   };
 
+  const handleFilterLanguageChange = e => {
+    const value = e.target.value || undefined;
+    setFilter("language", value);
+    setFilterInputName(value);
+  };
+
+  const handleFilterMinstarsChange = e => {
+    const value = e.target.value || undefined;
+    setFilter("stars", value);
+    setFilterInputMinstars(value);
+  };
+
   // Render the UI for your table
   return (
     <>
@@ -34,9 +51,27 @@ export default function Table({ columns, data }) {
         className   = "rounded_input"
         value       = {filterInput}
         onChange    = {handleFilterChange}
-        placeholder = {"Repo name ✨"}
+        placeholder = {"Repo name 😅"}
       />
+
+      <div className="element_spacer"></div>
       
+      <input
+        className   = "rounded_input"
+        value       = {filterInputName}
+        onChange    = {handleFilterLanguageChange}
+        placeholder = {"Repo language 📑"}
+      />
+
+      <div className="element_spacer"></div>
+
+      <input
+        className   = "rounded_input"
+        value       = {filterInputMinstars}
+        onChange    = {handleFilterMinstarsChange}
+        placeholder = {"Minimum stars ✨"}
+      />
+
       <div className="element_spacer"></div>
 
       <table {...getTableProps()}>

@@ -15,8 +15,10 @@ import Cookies from 'js-cookie'
 // import TableContainer from "./TableContainer"
 // https://thewidlarzgroup.com/react-table-7/
 // https://github.com/TheWidlarzGroup/RT7-example/blob/102c5bbfddf9e01e556b84e81de51ef2cef3ba5e/src/App.js
+// https://www.akashmittal.com/gui-utility-to-generate-react-table-code/
 
-import TableContainer from "./Table_mine";
+// import TableContainer from "./Table_mine";
+import TableContainer from "./Table_new.jsx";
 import Animated_bar from "./Animated_hr.jsx";
 import Header from "./Header.jsx";
 import Display_simple_graph from "./Display_simple_graph.jsx";
@@ -24,6 +26,8 @@ import Display_bubble_graph from "./Display_bubble_graph.jsx";
 import Tooltip from "./Tooltip.jsx";
 
 import Data_digitize from "./data_from_arrayofvalues_to_listofcounts.js";
+
+import Local_database from "./local_database_repos_topics.js"
 
 import {
 	BrowserRouter as Router,
@@ -39,8 +43,8 @@ import { useState, useEffect } from "react";
 import { random } from "animejs";
 
 // import data_test from "./data_test.js";
-// import data_test from "./data_test_topics.js";
-import data_test from "./data_test_full.js";
+import data_test from "./data_test_topics.js";
+// import data_test from "./data_test_full.js";
 
 // axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
 
@@ -230,8 +234,8 @@ class App extends Component {
                     <Route path="/table">
                         {/* <div> */}
                         {/* <TableContainer columns={this.columns} data={this.data} /> */}
-                        {/* <TableContainer columns={this.columns} data={this.state.list_of_starred} /> */}
-                        <TableContainer columns={this.columns} data={data_test} />
+                        <TableContainer columns={this.columns} data={this.state.list_of_starred} />
+                        {/* <TableContainer columns={this.columns} data={data_test} /> */}
                         {/* </div> */}
                     </Route>
                 </Switch>
@@ -273,25 +277,42 @@ class App extends Component {
     componentWillMount()
     {
 
+        // this.columns = [
+        //     { Header: "Name",     accessor: "name",             },
+        //     { Header: "Stars",    accessor: "stargazers_count", },
+        //     { Header: "Language", accessor: "language",         },
+        //     { Header: "Topics",   accessor: "topics", Cell: ({ cell: { value } }) => ( <Genres values={value} /> ), },
+        // ];
+
         this.columns = [
-            // {
-            //     Header: "Details",
-            //     columns: [
-                    { Header: "Name", accessor: "name", },
-                    { Header: "Stars", accessor: "stargazers_count", },
-                    { Header: "Language", accessor: "language", },
-                    {
-                        Header: "Topics",
-                        accessor: "topics",
-                        Cell: ({ cell: { value } }) => (
-                            <Genres values={value} />
-                        ),
-                    },
-                    // { Header: "Runtime", accessor: "show.runtime", },
-                    // { Header: "Status", accessor: "show.status", },
-            //     ],
-            // },
-        ];
+            {
+                "id": "columnId_0_00.3993265160822733",
+                "Header": "Name",
+                "Footer": "",
+                "accessor": "name"
+            },
+            {
+                "id": "columnId_0_00.8048758967415083",
+                "Header": "Stars",
+                "Footer": "",
+                "accessor": "stargazers_count",
+                "filter": "between"
+            },
+            {
+                "id": "columnId_0_00.9075474765424285",
+                "Header": "Language",
+                "Footer": "",
+                "accessor": "language",
+                "filter": "includes"
+            },
+            {
+                "id": "columnId_0_00.4798125422028431",
+                "Header": "Topics",
+                "Footer": "",
+                "accessor": "topics",
+                Cell: ({ cell: { value } }) => ( <Genres values={value} /> )
+            }
+        ]
 
         this.data = [
             {
@@ -413,7 +434,7 @@ class App extends Component {
 
         let list_of_repos = []
 
-        if (false)
+        if (true)
         {
             let extracted = []
             
@@ -428,21 +449,38 @@ class App extends Component {
             }
 
             // Secondly, we proceed to extract the different topics present on the repo
-            for await (let info_extracted of list_of_repos)
-            {                
-                info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
-                // info_extracted.topics = info_extracted.topics.names
-                // info_extracted.topics = []
+            // for await (let info_extracted of list_of_repos)
+            // {                
+            //     info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
+            //     // info_extracted.topics = info_extracted.topics.names
+            //     // info_extracted.topics = []
+            // }
+            // Since too many API calls are required for the previous approach to work, instead a local database is used
+            // Local_database
+            
+            // console.log(Local_database);
+
+            for (let i = 0; i < list_of_repos.length; i++)
+            {
+                if (list_of_repos[i].full_name in Local_database)
+                {
+                    list_of_repos[i].topics = Local_database[list_of_repos[i].full_name]
+                }
+                else
+                {
+                    list_of_repos[i].topics = [];
+                }
             }
+
         }
 
         // let coso = await get_topics_scrapping("https://github.com/cheeriojs/cheerio")
         // let coso = await get_topics_scrapping("https://dev.to/aurelkurtula")
         // console.log(coso)
 
-        list_of_repos = data_test
+        // list_of_repos = data_test
 
-        for await (let info_extracted of list_of_repos) { if (info_extracted.topics === null) { info_extracted.topics = [] } }
+        // for await (let info_extracted of list_of_repos) { if (info_extracted.topics === null) { info_extracted.topics = [] } }
 
         console.log("Finished extracting information from user...", list_of_repos)        
 
