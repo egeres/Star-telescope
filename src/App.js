@@ -59,7 +59,8 @@ class App extends Component {
             list_of_starred          : [],
             distribution_of_languages: {},
             muted                    : true,
-            max_scrapping_pages      : 2,
+            // max_scrapping_pages      : 2,
+            max_scrapping_pages      : 200,
             username_to_search       : "",
             username_current         : "",
         };
@@ -198,7 +199,7 @@ class App extends Component {
                             marginLeft: "0px",
                         }}
                         // onClick={() => {this.setState({username_current: "egeres"})}}
-                        onClick={() => {this.setState({username_current: this.state.username_to_search})}}
+                        onClick={() => {this.setState({username_current: this.state.username_to_search}) ; this.extract_user_data()}}
                     >
                         Go !
                     </button>
@@ -244,7 +245,7 @@ class App extends Component {
                         <div style={{
                             display:"flex"
                         }}>
-                            {/* <Display_simple_graph
+                            <Display_simple_graph
                             data = {
                             Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
                             .filter(x => !isNaN(x))
@@ -253,14 +254,14 @@ class App extends Component {
                             width  = {500}
                             height = {500}
                             margin = {50  }
-                            /> */}
+                            />
 
-                            {/* <Display_bubble_graph
+                            <Display_bubble_graph
                             data   = {this.state.distribution_of_languages}
                             width  = {500}
                             height = {500}
                             margin = {50  }
-                            /> */}
+                            />
 
                         </div> 
                     </Route>
@@ -412,13 +413,98 @@ class App extends Component {
     async componentDidMount()
     {
 
-        // Call to update eva icons
+        // Call to update eva icons 🥱
         eva.replace()
 
-        // We set the variables stored in the cookies
+        // We set the variables stored in the cookies 🙄
         this.setState(prev_state => ({muted: Cookies.get('muted') === 'true'}))
 
+        // We extract the info from the user! 🥰
+        // this.extract_user_data()
+
+        // Small warning 😋
         if (this.state.max_scrapping_pages != 99999) { console.log("Warning 🤔"); console.log("max_scrapping_pages set to", this.state.max_scrapping_pages)}
+
+
+            
+
+        let list_of_repos = []
+
+        if (false)
+        {
+            let extracted = []
+            
+            // A while loop would be better tho
+            // We first get a full list of all the repositories
+            for (let page = 0; page < this.state.max_scrapping_pages; page++)
+            {
+                // console.log("Extracting page", page, "...")
+                // extracted = await get_repos_API("egeres", page).then(x => {return x})
+                if (extracted.length === 0) { break; }
+                else                        { list_of_repos = list_of_repos.concat(extracted); }
+            }
+
+            // Secondly, we proceed to extract the different topics present on the repo
+            // for await (let info_extracted of list_of_repos)
+            // {                
+            //     info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
+            //     // info_extracted.topics = info_extracted.topics.names
+            //     // info_extracted.topics = []
+            // }
+            // Since too many API calls are required for the previous approach to work, instead a local database is used
+            // Local_database
+            
+            // console.log(Local_database);
+
+            for (let i = 0; i < list_of_repos.length; i++)
+            {
+                if (list_of_repos[i].full_name in Local_database)
+                {
+                    list_of_repos[i].topics = Local_database[list_of_repos[i].full_name]
+                }
+                else
+                {
+                    list_of_repos[i].topics = [];
+                }
+            }
+
+        }
+
+        // let coso = await get_topics_scrapping("https://github.com/cheeriojs/cheerio")
+        // let coso = await get_topics_scrapping("https://dev.to/aurelkurtula")
+        // console.log(coso)
+
+        // list_of_repos = data_test
+
+        // for await (let info_extracted of list_of_repos) { if (info_extracted.topics === null) { info_extracted.topics = [] } }
+
+        // console.log("Finished extracting information from user...", list_of_repos)        
+
+        // this.setState({list_of_starred: list_of_repos})
+
+        // let tmp = {};
+        // for await (let repo of list_of_repos)
+        // {
+        //     if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
+        //     else                         { tmp[repo.language]++;  }
+        // }
+        // this.setState({distribution_of_languages: tmp})
+
+
+        // get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
+
+        // https://api.github.com/repos/serengil/deepface/topics
+
+		// https://api.github.com/users/karpathy
+    }
+
+    // async componentDidUpdate()
+    // {
+        // this.extract_user_data()
+    // }
+
+    async extract_user_data()
+    {
 
         const get_repos_API = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
@@ -458,67 +544,42 @@ class App extends Component {
                 (res)   => { if(res.status === 200) { return res.data } },
                 (error) => { console.log(error)}
             )
-            // .then((html) => {
-            //     let $ = cheerio.load(html);
-            //     return $(".topic-tag")
-            //     // topic-tag
-            // })
-            
 
+        console.log("Extracting user data...")
+
+        let extracted     = []
         let list_of_repos = []
-
-        if (true)
+            
+        // We first get a full list of all the repositories (A while loop would be better tho...)
+        for (let page = 0; page < this.state.max_scrapping_pages; page++)
         {
-            let extracted = []
-            
-            // A while loop would be better tho
-            // We first get a full list of all the repositories
-            for (let page = 0; page < this.state.max_scrapping_pages; page++)
+            console.log("Extracting page", page, "...")
+            // extracted = await get_repos_API("egeres", page).then(x => {return x})
+
+            if (this.state.username_current !== "")
             {
-                console.log("Extracting page", page, "...")
-                extracted = await get_repos_API("egeres", page).then(x => {return x})
-                if (extracted.length === 0) { break; }
-                else                        { list_of_repos = list_of_repos.concat(extracted); }
+                extracted = await get_repos_API(this.state.username_current, page).then(x => {return x})
+            }
+            else
+            {
+                extracted = [];
             }
 
-            // Secondly, we proceed to extract the different topics present on the repo
-            // for await (let info_extracted of list_of_repos)
-            // {                
-            //     info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
-            //     // info_extracted.topics = info_extracted.topics.names
-            //     // info_extracted.topics = []
-            // }
-            // Since too many API calls are required for the previous approach to work, instead a local database is used
-            // Local_database
             
-            // console.log(Local_database);
-
-            for (let i = 0; i < list_of_repos.length; i++)
-            {
-                if (list_of_repos[i].full_name in Local_database)
-                {
-                    list_of_repos[i].topics = Local_database[list_of_repos[i].full_name]
-                }
-                else
-                {
-                    list_of_repos[i].topics = [];
-                }
-            }
-
+            if (extracted.length === 0) { break; }
+            else                        { list_of_repos = list_of_repos.concat(extracted); }
         }
 
-        // let coso = await get_topics_scrapping("https://github.com/cheeriojs/cheerio")
-        // let coso = await get_topics_scrapping("https://dev.to/aurelkurtula")
-        // console.log(coso)
-
-        // list_of_repos = data_test
-
-        // for await (let info_extracted of list_of_repos) { if (info_extracted.topics === null) { info_extracted.topics = [] } }
-
-        console.log("Finished extracting information from user...", list_of_repos)        
+        // Topics are extracted from a local database not to overuse github's API limit of anonymous requests
+        for (let i = 0; i < list_of_repos.length; i++)
+        {
+            if (list_of_repos[i].full_name in Local_database) { list_of_repos[i].topics = Local_database[list_of_repos[i].full_name] }
+            else { list_of_repos[i].topics = []; }
+        }
 
         this.setState({list_of_starred: list_of_repos})
 
+        // We update the distribution of languages !
         let tmp = {};
         for await (let repo of list_of_repos)
         {
@@ -527,49 +588,18 @@ class App extends Component {
         }
         this.setState({distribution_of_languages: tmp})
 
-
-        // get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
-
-        // https://api.github.com/repos/serengil/deepface/topics
-
-		// https://api.github.com/users/karpathy
     }
 }
 
-// const Button_toggle_sound = (props) => {
-//     console.log(props)
-//     if (props.onoroff) { return ( <div onClick={props.onClick} > <i data-eva="volume-off-outline"  fill="#343434"></i> </div> ) }
-//     else               { return ( <div onClick={props.onClick} > <i data-eva="volume-up-outline"   fill="#343434"></i> </div> ) }
-// }
-
 const Button_toggle_sound = (props) => {
-    // console.log("props", props)
-
-    // useEffect(() => {
-    //     eva.replace()
-    // }, []);
-
-    // if (props.onoroff) { return ( <i data-eva="volume-off-outline"  fill="#343434"></i> ) }
-    // else               { return ( <i data-eva="volume-up-outline"   fill="#343434"></i> ) }
-
-    // if (props.onoroff) { return ( <i>AAAAA</i> ) }
-    // else               { return ( <i>BBBBB</i> ) }
-
-    // let kjasndkjnad = "volume-off-outline"
-    // if (props.onoroff) { kjasndkjnad = "volume-up-outline" }
-    // return ( <i data-eva={kjasndkjnad} fill="#343434"></i> )
-
-    // eva.replace()
-
     return (
         <div>
             <div className={props.onoroff ? 'display_flex' : 'display_hidden'}> <i  data-eva="volume-off-outline" fill="#343434"></i> </div>
             <div className={props.onoroff ? 'display_hidden' : 'display_flex'}> <i  data-eva="volume-up-outline"  fill="#343434"></i> </div>
         </div>
-        )
+    )
 }
 
-// Custom component to render Genres
 const Genres = ({ values }) => {
     // Loop through the array and create a badge-like component instead of a comma-separated string
     return (

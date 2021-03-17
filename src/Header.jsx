@@ -116,7 +116,7 @@ export default class Header extends Component {
         {
 
         
-        console.log("...")
+        // console.log("...")
         const user_profileinfo = (user) => axios
         .get(`https://api.github.com/users/${user}`)
         .then((res) => res.data);
@@ -127,7 +127,7 @@ export default class Header extends Component {
 
         user_profileinfo(this.props.user).then(
             (res) => {
-                console.log("asdadsads");
+                // console.log("asdadsads");
     //             // console.log(res);
     //             // console.log(res.avatar_url)
 
