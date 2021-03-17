@@ -87,25 +87,56 @@ export default class Header extends Component {
 
     componentDidMount()
     {
+        if (this.props.user !== "")
+        {
+            const user_profileinfo = (user) => axios
+                .get(`https://api.github.com/users/${user}`)
+                .then((res) => res.data);
 
-        const user_profileinfo = (user) =>
-            axios
-            .get(`https://api.github.com/users/${user}`)
-            .then((res) => res.data);
+            // user_prof("egeres").then(console.log);
+            // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
 
-        // user_prof("egeres").then(console.log);
-        // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
+
+            user_profileinfo(this.props.user).then(
+                (res) => {
+                    // console.log("asdadsads");
+                    // console.log(res);
+                    // console.log(res.avatar_url)
+                    this.setState({ user_profilepic: res.avatar_url})
+                }
+            );
+
+        }
+    }
+
+    componentDidUpdate()
+    {
+        if (this.props.user !== "")
+
+        {
+
+        
+        console.log("...")
+        const user_profileinfo = (user) => axios
+        .get(`https://api.github.com/users/${user}`)
+        .then((res) => res.data);
+
+    //     // user_prof("egeres").then(console.log);
+    //     // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
 
 
         user_profileinfo(this.props.user).then(
             (res) => {
-                // console.log("asdadsads");
-                // console.log(res);
-                // console.log(res.avatar_url)
-                this.setState({ user_profilepic: res.avatar_url})
+                console.log("asdadsads");
+    //             // console.log(res);
+    //             // console.log(res.avatar_url)
+
+                if (res.avatar_url !== this.state.user_profilepic)
+                {
+                    this.setState({ user_profilepic: res.avatar_url})
+                }
             }
         );
-
-
+        }
     }
 }

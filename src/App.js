@@ -44,6 +44,7 @@ import { random } from "animejs";
 
 // import data_test from "./data_test.js";
 import data_test from "./data_test_topics.js";
+import { reduce } from "d3-array";
 // import data_test from "./data_test_full.js";
 
 // axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
@@ -59,6 +60,8 @@ class App extends Component {
             distribution_of_languages: {},
             muted                    : true,
             max_scrapping_pages      : 2,
+            username_to_search       : "",
+            username_current         : "",
         };
     }
 
@@ -76,13 +79,18 @@ class App extends Component {
     //     else                     { context.setState({muted: true }) }
     // }
 
+
+
     render()
     {
         let audio_pop = new Audio("/pop_0.mp3");
 
         // this.max_scrapping_pages = 2;
 
-        
+        const handleChange_username = (event) =>
+        {
+            this.setState({username_to_search: event.target.value});
+        }
 
         const state_toggle_mute = () =>
         {
@@ -138,7 +146,9 @@ class App extends Component {
             {/* <div className="element_spacer"></div> */}
 
             {/* 😚 Container of the elements ! */}
-            <div style={{ 
+            <div 
+            className="background_grid_50"
+            style={{ 
                 backgroundColor: "#0e0e0e",
                 // backgroundColor: "red",
                 // height         : "100%",
@@ -152,11 +162,50 @@ class App extends Component {
 
                 <div className="element_spacer"></div>
 
-                <Header user="egeres"></Header>
+                {/* <Header user="egeres"></Header> */}
+                <Header user={this.state.username_current}></Header>
+
+                <div className="element_spacer"></div>
 
                 <Router>
-                <nav>
-                    <div style={{display:"flex", justifyContent:"center", backgroundColor:"transparent", alignItems:"center"}}>
+                <nav className="Navigation_bar">
+
+                    {/* <div style={{height:"100%"}}>asdasd</div> */}
+                    <input
+                        id="input_username"
+                        style        = {{ 
+                            width          : "223px",
+                            backgroundColor: "#0e0e0e",
+                            // border         : 'none',
+                            borderColor: "#343434",
+                            borderStyle: "solid",
+                            fontSize   : "16px",
+                            margin     : "10px",
+                            marginRight: "0px",
+                            color      : "#343434",
+
+                            // font-size: 20px;
+                            // background-color: #343434;
+                        }}
+                        placeholder = "username to search 😀"
+                        value       = {this.state.username_to_search}
+                        onChange    = {handleChange_username}
+                    ></input>
+
+                    <button
+                        style={{
+                            margin    : "10px",
+                            marginLeft: "0px",
+                        }}
+                        // onClick={() => {this.setState({username_current: "egeres"})}}
+                        onClick={() => {this.setState({username_current: this.state.username_to_search})}}
+                    >
+                        Go !
+                    </button>
+
+                    <div className="element_spacer"></div>
+
+                    <div style={{height:"100%", display:"flex", justifyContent:"center", backgroundColor:"transparent", alignItems:"center"}}>
                         <Link to="/"      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
                         <p>-</p>
                         <Link to="/table" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
@@ -195,39 +244,23 @@ class App extends Component {
                         <div style={{
                             display:"flex"
                         }}>
-
-                            
-                            {/* <h3>Distribution of starred repos</h3> */}
-                            <Display_simple_graph 
-                            // data   = {this.extract_star_count(this.state.list_of_starred)}
-                            // data   = {Data_digitize(this.extract_star_count(this.state.list_of_starred), 100)}
-                            // data   = {Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 100)}
-                            // data   = {Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 5000).map((v, i) => {return {x:i, y:v}})}
-                            // data   = {[{x:0, y:0}, {x:10, y:10}, {x:20, y:20}]}
+                            {/* <Display_simple_graph
                             data = {
-                                Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
-                                .filter(x => !isNaN(x))
-                                .map((v, i) => {return {"x":i, "y":v}})
+                            Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
+                            .filter(x => !isNaN(x))
+                            .map((v, i) => {return {"x":i, "y":v}})
                             }
-
-                            
                             width  = {500}
                             height = {500}
                             margin = {50  }
-                            />
+                            /> */}
 
-                            {/* <div class="element_spacer"></div> */}
-
-                            <Display_bubble_graph
-                            // data   = {[
-                            //     {name:"A BBBB", radius:100},
-                            //     {name:"B BBBB", radius:30},
-                            // ]}
+                            {/* <Display_bubble_graph
                             data   = {this.state.distribution_of_languages}
                             width  = {500}
                             height = {500}
                             margin = {50  }
-                            />
+                            /> */}
 
                         </div> 
                     </Route>
@@ -487,7 +520,7 @@ class App extends Component {
         this.setState({list_of_starred: list_of_repos})
 
         let tmp = {};
-        for await (let repo of data_test)
+        for await (let repo of list_of_repos)
         {
             if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
             else                         { tmp[repo.language]++;  }

@@ -89,3 +89,27 @@ table {
 .display_hidden { display:none; }
 
 .display_flex { display: flex; }
+
+
+
+.background_grid_50
+{
+    /* background-color: #0e0e0e; */
+    /* opacity: 0.4; */
+    /* background-image: radial-gradient(#343434 1px, #0e0e0e 1px); */
+    /* background-size: 50px 50px; */
+    /* background-size: 25px 25px; */
+    /* background-position: 25px 25px; */
+    /* background-position: 12.5px 12.5px; */
+}
+
+.Navigation_bar
+{
+  height          : 50px;
+  background-color: #0e0e0e;
+  border-color    : #343434;
+  /* border-width    : 1px;
+  border-style    : solid; */
+  display: flex;
+
+}
