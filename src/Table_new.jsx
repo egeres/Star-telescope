@@ -59,7 +59,8 @@ function DefaultColumnFilter({
       onChange={(e) => {
         setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
       }}
-      placeholder={`Search ${count} records...`}
+      // placeholder={`Search ${count} records...`}
+      placeholder={`Search...`}
     />
   );
 }
@@ -290,8 +291,17 @@ function Table({columns, data}) {
           {headerGroups.map((group) => (
             <tr {...group.getHeaderGroupProps()}>
               {group.headers.map((column) => (
-                <th {...column.getHeaderProps()}>
-                  
+                <th 
+                  {...column.getHeaderProps()}
+                  // style= {{ ...column.getHeaderProps.style }}
+                  style={{
+                    // backgroundColor:"red"
+                  }}
+                >
+                    {/* {column.getHeaderProps()["width"]} */}
+                    {/* {column.getHeaderProps()} */}
+                    {/* {JSON.stringify(column.getHeaderProps())} */}
+
                     <div {...column.getSortByToggleProps()}>
                       {column.render("Header")}
                       <span>
@@ -333,7 +343,7 @@ function Table({columns, data}) {
           })}
         </tbody>
         
-        <tfoot>
+        {/* <tfoot>
           {footerGroups.map((group) => (
             <tr {...group.getFooterGroupProps()}>
               {group.headers.map((column) => (
@@ -343,7 +353,7 @@ function Table({columns, data}) {
               ))}
             </tr>
           ))}
-        </tfoot>
+        </tfoot> */}
         
       </table>
       
@@ -388,7 +398,7 @@ function Table({columns, data}) {
             Cookies.set('table_pagesize', Number(e.target.value).toString());
           }}
         >
-          {[5, 10, 25, 50, 100, 250, 500].map((pageSize) => (
+          {[100, 250, 500, 1000].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

@@ -45,7 +45,7 @@ code {
   margin         : 10px;
   color          : #343434;
   text-decoration: none;
-  font-size      : 20px;
+  font-size      : 18px;
 }
 
 .link_router:hover
@@ -79,7 +79,7 @@ table {
 {
   width           : 50%;
   /* height          : 30px; */
-  font-size: 20px;
+  font-size: 18px;
   background-color: #343434;
   border          : None;
   color           : white;
@@ -112,4 +112,54 @@ table {
   border-style    : solid; */
   display: flex;
 
+}
+
+button
+{
+  background-color: #343434;
+  color           : #0e0e0e;
+  border          : none;
+  transition      : background-color 0.1s;
+  font-size: 18px;
+}
+
+button:hover
+{
+  background-color: #585858;
+}
+
+input:focus
+{
+  outline     : none;
+  border-color: #585858
+}
+
+input
+{
+  background-color: #0e0e0e;
+  border-color    : #343434;
+  border-style    : solid;
+  font-size       : 16px;
+  margin          : 10px;
+  margin-right    : 0px;
+  color           : #343434;
+}
+
+td
+{
+  border            : 1px solid #343434;
+  border-left-width : 0px;
+  border-right-width: 0px;
+}
+
+th
+{
+  border            : 1px solid #343434;
+  border-left-width : 0px;
+  border-right-width: 0px;
+}
+
+table
+{
+  border:none;
 }

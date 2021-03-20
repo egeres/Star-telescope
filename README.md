@@ -16,14 +16,27 @@
 - [x] Add graph of languages 
 - [ ] Add graph with topics
 - [ ] Change null to "no language"
-- [ ] Change .css Go button
-- [ ] Change .css Table search entries
-- [ ] Change .css of Table
-- [ ] Change .css of table footer
+- [x] Change .css Go button
+- [x] Change .css Table search entries
+- [x] Change .css of Table
+- [x] Remove table footer lines
 - [ ] Add a why section
 - [ ] Names of the table are clicable
 - [ ] Fix tooltip graph stars
 - [ ] Fix axis graph stars
+- [x] Table default page size 100
+- [ ] Add documentation image to the repo
+- [x] Change fav icon
+- [x] Change title
+- [ ] Save latest searched user on cookies... ?
+- [x] Fix sound fx
+- [x] Add feedback when loading user data...
+- [ ] .css de los links pls !
+- [ ] Add a number counter over the picture that shows the number of repos
+- [ ] Resize de la columna de las estrellas
+- [ ] Handlear error 403 ?
+- [ ] Handlear si el usuario no pone un nick adecuado
+- [ ] Fix de que cuando le das no devuelve inmediatamente la información de usuario y hay que dar una segunda vez
 
 
 

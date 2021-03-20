@@ -56,6 +56,7 @@ class App extends Component {
     {
         super(props);
         this.state = {
+            stars_count              : 0,
             list_of_starred          : [],
             distribution_of_languages: {},
             muted                    : true,
@@ -164,7 +165,10 @@ class App extends Component {
                 <div className="element_spacer"></div>
 
                 {/* <Header user="egeres"></Header> */}
-                <Header user={this.state.username_current}></Header>
+                <Header 
+                    user       = {this.state.username_current}
+                    star_count = {this.state.stars_count}
+                ></Header>
 
                 <div className="element_spacer"></div>
 
@@ -268,7 +272,11 @@ class App extends Component {
                     <Route path="/table">
                         {/* <div> */}
                         {/* <TableContainer columns={this.columns} data={this.data} /> */}
-                        <TableContainer columns={this.columns} data={this.state.list_of_starred} />
+                        <TableContainer 
+                            columns  = {this.columns}
+                            data     = {this.state.list_of_starred}
+                            // pageSize = {100}
+                        />
                         {/* <TableContainer columns={this.columns} data={data_test} /> */}
                         {/* </div> */}
                     </Route>
@@ -323,28 +331,35 @@ class App extends Component {
                 "id": "columnId_0_00.3993265160822733",
                 "Header": "Name",
                 "Footer": "",
-                "accessor": "name"
+                // "accessor": "name",
+                // "accessor": "full_name",
+                "accessor": "html_url",
+                // Cell: ({ cell: { value } }) => ( <a href={"https://github.com/"+value}>{value}</a> )
+                Cell: ({ cell: { value } }) => ( <a href={value}>{value.split("/")[ value.split("/").length - 1 ]}</a> )
             },
             {
-                "id": "columnId_0_00.8048758967415083",
-                "Header": "Stars",
-                "Footer": "",
+                "id"      : "columnId_0_00.8048758967415083",
+                "Header"  : "Stars",
+                "Footer"  : "",
                 "accessor": "stargazers_count",
-                "filter": "between"
+                "filter"  : "between",
+                "width"   : 50,
+                "minWidth": 50,
+                "maxWidth": 50,
             },
             {
-                "id": "columnId_0_00.9075474765424285",
-                "Header": "Language",
-                "Footer": "",
+                "id"      : "columnId_0_00.9075474765424285",
+                "Header"  : "Language",
+                "Footer"  : "",
                 "accessor": "language",
-                "filter": "includes"
+                "filter"  : "includes",
             },
             {
-                "id": "columnId_0_00.4798125422028431",
-                "Header": "Topics",
-                "Footer": "",
+                "id"      : "columnId_0_00.4798125422028431",
+                "Header"  : "Topics",
+                "Footer"  : "",
                 "accessor": "topics",
-                Cell: ({ cell: { value } }) => ( <Genres values={value} /> )
+                Cell      : ({ cell: { value } }) => ( <Genres values={value} /> ),
             }
         ]
 
@@ -567,7 +582,10 @@ class App extends Component {
 
             
             if (extracted.length === 0) { break; }
-            else                        { list_of_repos = list_of_repos.concat(extracted); }
+            else                        { 
+                list_of_repos = list_of_repos.concat(extracted); 
+                this.setState({stars_count: list_of_repos.length})
+            }
         }
 
         // Topics are extracted from a local database not to overuse github's API limit of anonymous requests

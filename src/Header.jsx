@@ -2,12 +2,15 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Animated_bar from "./Animated_hr.jsx";
+import CountUp from 'react-countup';
 
 export default class Header extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            current_counter_value:0
+        }
     }
 
     render()
@@ -52,9 +55,30 @@ export default class Header extends Component {
                     width          : "200px",
                     height         : "200px",
                     // backgroundColor: "red"  ,
+                    display:"flex",
+                    // alignContent:"center",
+                    // justifyContent:"center",
+                    alignItems:"center",
+                    // position:"relative",
                 }}
             >
-                <img src={this.state.user_profilepic} style={{width:"100%", borderRadius:"50%"}} />
+                <div style={{backgroundColor:"#000", width:"200px", height:"200px", borderRadius:"50%", position:"absolute"}}></div>
+                {/* <div style={{backgroundColor:"red",  width:"200px", height:"200px", borderRadius:"50%", position:"absolute"}}></div> */}
+                <img src={this.state.user_profilepic} style={{width:"200px", position:"absolute", borderRadius:"50%"}} />
+                <div style={{
+                    position   : "absolute",
+                    fontSize   : "50px",
+                    textAlign  : "center",
+                    marginLeft : "auto",
+                    marginRight: "auto",
+                    left       : 0,
+                    right      : 0,
+                    color      : "#e62424",
+                }}>
+                    {/* 999999 */}
+                    {/* {this.props.star_count} */}
+                    <CountUp end={this.props.star_count} />
+                </div>
             </div>
 
 
@@ -112,7 +136,6 @@ export default class Header extends Component {
     componentDidUpdate()
     {
         if (this.props.user !== "")
-
         {
 
         
@@ -124,7 +147,9 @@ export default class Header extends Component {
     //     // user_prof("egeres").then(console.log);
     //     // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
 
-
+        // if (res.avatar_url !== this.state.user_profilepic)
+        // {
+            
         user_profileinfo(this.props.user).then(
             (res) => {
                 // console.log("asdadsads");
@@ -137,6 +162,14 @@ export default class Header extends Component {
                 }
             }
         );
+        // }
+
+        // for (let i = 0; i < 100; i++) {
+        //     // const element = array[i];
+            
+        // }
+
+
         }
     }
 }
