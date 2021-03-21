@@ -55,3 +55,4 @@
 - [ ] Possibility to add custom tags 😣
 - [ ] Possibility to search multitag
 - [ ] npm run build should both copy the build files to doc + change the routes on build/index.html to begin with /Star-telescope
+- [ ] build should automatically change the path for pop_0.mp3

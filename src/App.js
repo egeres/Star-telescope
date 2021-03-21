@@ -61,7 +61,7 @@ class App extends Component {
             list_of_starred          : [],
             distribution_of_languages: {},
             muted                    : true,
-            max_scrapping_pages      : 200,
+            max_scrapping_pages      : 99999,
             username_to_search       : "",
             username_current         : "",
 
@@ -89,7 +89,7 @@ class App extends Component {
 
     render()
     {
-        let audio_pop = new Audio("/pop_0.mp3");
+        let audio_pop = new Audio("/Star-telescope/pop_0.mp3");
         audio_pop.volume = 0.2;
 
         // this.max_scrapping_pages = 2;
