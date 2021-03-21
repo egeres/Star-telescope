@@ -62,7 +62,7 @@ export default class Header extends Component {
                     // alignContent:"center",
                     // justifyContent:"center",
                     alignItems:"center",
-                    // position:"relative",
+                    position:"relative",
                 }}
             >
                 <div style={{backgroundColor:"#000", width:"200px", height:"200px", borderRadius:"50%", position:"absolute"}}></div>

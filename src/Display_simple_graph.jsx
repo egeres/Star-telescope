@@ -108,7 +108,7 @@ export default class Display_simple_graph extends Component
                     .attr("fill", "white")
                     // .text(d => d)
                     // .text("xx")
-                    .text(y => thiz.func_axis_y(y))
+                    .text(y => thiz.props.func_axis_y(y))
 
             svg.selectAll("Lol")
                 .data(y_axis.map(x => x*x_max))
@@ -121,7 +121,7 @@ export default class Display_simple_graph extends Component
                     // .style("text-decoration", "underline") 
                     .attr("fill", "white")
                     // .text(d => d)
-                    .text(x => thiz.func_axis_x(x))
+                    .text(x => thiz.props.func_axis_x(x))
     
             svg.selectAll("whatever")
                 .data(this.props.data)
@@ -174,6 +174,6 @@ Display_simple_graph.defaultProps = {
     margin      : 10,
     data        : [],
     func_tooltip: (d, i) => {console.log(d);console.log(i); return "Tooltip " + i},
-    func_axis_x : (x)    => {return "|"+x+"|"},
-    func_axis_y : (y)    => {return "|"+y+"|"},
+    func_axis_x : (x)    => {return ""+Math.round(x)+""},
+    func_axis_y : (y)    => {return ""+Math.round(y)+""},
 };

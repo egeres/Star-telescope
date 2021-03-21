@@ -1,4 +1,12 @@
 export default {
+    "egeres/Star-telescope": [
+        "react",
+        "github-pages",
+        "front-end",
+        "js",
+        "static-site",
+        "stars"
+    ],
     "drapergem/draper": [
         "ruby",
         "decorators"

@@ -9,7 +9,8 @@ import {
   ,useAsyncDebounce
 } from "react-table";
 
-import Cookies from 'js-cookie'
+import Cookies  from 'js-cookie'
+import * as eva from "eva-icons";
 
 
 
@@ -262,10 +263,24 @@ function Table({columns, data}) {
 
 //   setPageSize(20)
 
-//   useEffect(() => {
-//       setPageSize( parseInt(Cookies.get('table_pagesize')) )
-// setPageSize(10)
-//   })
+  useEffect(() => {
+    //       setPageSize( parseInt(Cookies.get('table_pagesize')) )
+
+    // if (pageSize != 100) { setPageSize(100); }
+
+    if (Cookies.get('table_pagesize'))
+    {
+      if (pageSize !== parseInt(Cookies.get('table_pagesize')) ) { setPageSize( parseInt(Cookies.get('table_pagesize')) ); }
+    }
+    else
+    {
+      if (pageSize !== 100) { setPageSize(100); }
+    }
+    // console.log(pageSize)
+
+    // setPageSize(50)
+    eva.replace()
+  })
 
   // Render the UI for your table
   return (
@@ -282,8 +297,11 @@ function Table({columns, data}) {
         border={1}
         style={{
           borderCollapse: "collapse",
-          width: "100%",
-          margin: "auto"
+          width         : "100%",
+          margin        : "auto",
+          overflowY     : "scroll",
+          paddingRight  : "17px",
+          boxSizing     : "content-box",
         }}
       >
         
@@ -302,13 +320,20 @@ function Table({columns, data}) {
                     {/* {column.getHeaderProps()} */}
                     {/* {JSON.stringify(column.getHeaderProps())} */}
 
-                    <div {...column.getSortByToggleProps()}>
+                    <div {...column.getSortByToggleProps()} className="noselect">
                       {column.render("Header")}
-                      <span>
+                      <span >
                         {column.isSorted
                           ? column.isSortedDesc
-                            ? " 🔽"
-                            : " 🔼"
+                            // ? <div><i data-eva="arrow-upward-outline"   fill="#343434"></i></div>
+                            // ? " ^"
+                            ? " 🔼"
+                            // : <div><i data-eva="arrow-downward-outline" fill="#343434"></i></div>
+                            // : " X"
+                            // : <div><i data-eva="arrow-upward-outline"   fill="#343434"></i></div>
+                            // : <i data-eva="arrow-upward-outline"   fill="#343434"></i>
+                            // : " v"
+                            : " 🔽"
                           : column.canSort
                         //   ? "⏺"
                           ? ""
@@ -399,7 +424,7 @@ function Table({columns, data}) {
             Cookies.set('table_pagesize', Number(e.target.value).toString());
           }}
         >
-          {[100, 250, 500, 1000].map((pageSize) => (
+          {[100, 250, 500, 1000, 15000, 999999].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

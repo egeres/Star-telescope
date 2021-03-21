@@ -243,10 +243,17 @@ class App extends Component {
                     <div className="element_spacer"></div>
 
                     <div style={{height:"100%", display:"flex", justifyContent:"center", backgroundColor:"transparent", alignItems:"center"}}>
+
                         <Link to="/"      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
-                        <p style={{color:"#343434"}}>-</p>
+                        
+                        {/* <p style={{color:"#343434"}}>-</p> */}
+                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
+                        
                         <Link to="/table" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
-                        <p style={{color:"#343434"}}>-</p>
+                        
+                        {/* <p style={{color:"#343434"}}>-</p> */}
+                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
+
                         {/* <p>-</p>
                         <Link to="/users" className="link_router">Users</Link> */}
 
@@ -257,6 +264,29 @@ class App extends Component {
                         {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute}></Button_toggle_sound> */}
                         {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute.bind(this)}></Button_toggle_sound> */}
                         {/* <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound> */}
+
+                        {/* <div onClick={() => {window.open("/why", "_blank");}} style={{margin:"10px"}}>
+                            <i data-eva="star-outline" fill="#343434"></i>
+                        </div> */}
+
+                        <Link to="/why" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}} style={{height:"24px"}}>
+                            <i data-eva="question-mark-outline" fill="#343434"></i>
+                        </Link>
+
+                        
+                        {/* <a href="/why" target="_blank" style={{margin:"10px" , height:"24px"}}>
+                            <i data-eva="question-mark-outline" fill="#343434"></i>
+                        </a> */}
+
+                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
+
+                        <a href="https://github.com/egeres/Star-telescope" target="_blank" style={{margin:"10px" , height:"24px"}}>
+                            <i data-eva="star-outline" fill="#343434"></i>
+                        </a>
+
+                        {/* <p style={{color:"#343434"}}>-</p> */}
+                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
+
                         <div onClick={() => state_toggle_mute()} style={{margin:"10px"}}>
                             <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound>
                         </div>
@@ -285,7 +315,7 @@ class App extends Component {
                                 width        = {500}
                                 height       = {500}
                                 margin       = {50 }
-                                func_tooltip = {(d, i) => {return " " + i.y + " repos with " + i.x*10 + "K stars"}}
+                                func_tooltip = {(d, i) => {return " " + i.y + " repos with stars in the range " + i.x*10 + "K - " + (i.x+1)*10+"K"}}
                                 func_axis_x  = { x     => {return x*10+"K"}}
                                 data         = {
                                     Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
@@ -303,7 +333,7 @@ class App extends Component {
 
                         </div> 
                     </Route>
-                    <Route path="/table">
+                    <Route path="/table" style={{overflow:"hidden"}}>
                         {/* <div> */}
                         {/* <TableContainer columns={this.columns} data={this.data} /> */}
                         <TableContainer 
@@ -381,17 +411,17 @@ class App extends Component {
                 "Header"  : "Stars",
                 "Footer"  : "",
                 "accessor": "stargazers_count",
-                "filter"  : "between",
-                "width"   : 50,
-                "minWidth": 50,
-                "maxWidth": 50,
+                // "filter"  : "between",
+                // "width"   : 50,
+                // "minWidth": 50,
+                // "maxWidth": 50,
             },
             {
                 "id"      : "columnId_0_00.9075474765424285",
                 "Header"  : "Language",
                 "Footer"  : "",
                 "accessor": "language",
-                "filter"  : "includes",
+                // "filter"  : "includes",
             },
             {
                 "id"      : "columnId_0_00.4798125422028431",
@@ -760,10 +790,14 @@ class App extends Component {
 
             // We update the distribution of languages !
             let tmp = {};
+
             for await (let repo of list_of_repos)
             {
-                if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
-                else                         { tmp[repo.language]++;  }
+                let repo_language = repo.language;
+                if (repo_language == null) { repo_language = "No language"; } 
+
+                if (!(repo_language in tmp)) { tmp[repo_language] = 1 }
+                else                         { tmp[repo_language]++;  }
             }
             this.setState({distribution_of_languages: tmp})
 
