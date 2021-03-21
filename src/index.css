@@ -42,16 +42,20 @@ code {
 
 .link_router
 {
+  font-size: 18px;
   margin         : 10px;
   color          : #343434;
   text-decoration: none;
   font-size      : 18px;
 }
 
+.link_router:visited {
+  color: #343434;
+}
+
 .link_router:hover
 {
-  color          : #cacaca;
-
+  color: #cacaca;
 }
 
 .element_spacer
@@ -162,4 +166,73 @@ th
 table
 {
   border:none;
+}
+
+
+/* .link_router {
+  color: #e62424;
+} */
+
+
+a:link {
+  color: #e62424;
+}
+
+/* visited link */
+a:visited {
+  color: #811e1e;
+}
+
+/* mouse over link */
+a:hover {
+  color: hotpink;
+}
+
+select
+{
+  /* display: none; */
+  border            : 2px solid #343434;
+  background-color: #0e0e0e;
+  color           : #343434;
+}
+
+select:after
+{
+  background-color: #0e0e0e;
+}
+
+option
+{
+  background-color: #0e0e0e;
+  color           : #343434;
+}
+
+option:hover
+{
+  background-color: #303030;
+}
+
+.pagination
+{
+  display        : flex;
+  flex-direction : row;
+  align-content  : center;
+  justify-content: space-evenly;
+  align-items    : center;
+  width          : 600px;
+}
+
+hr {
+  border: 1px solid #eeeeee;
+  margin:10;
+}
+
+.noselect {
+  -webkit-touch-callout: none;  /* iOS Safari */
+  -webkit-user-select  : none;  /* Safari */
+  -khtml-user-select   : none;  /* Konqueror HTML */
+  -moz-user-select     : none;  /* Old versions of Firefox */
+  -ms-user-select      : none;  /* Internet Explorer/Edge */
+  user-select          : none;  /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }

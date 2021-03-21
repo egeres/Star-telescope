@@ -24,6 +24,7 @@ import Header from "./Header.jsx";
 import Display_simple_graph from "./Display_simple_graph.jsx";
 import Display_bubble_graph from "./Display_bubble_graph.jsx";
 import Tooltip from "./Tooltip.jsx";
+import Popup from "./Popup_screen.jsx";
 
 import Data_digitize from "./data_from_arrayofvalues_to_listofcounts.js";
 
@@ -60,10 +61,13 @@ class App extends Component {
             list_of_starred          : [],
             distribution_of_languages: {},
             muted                    : true,
-            // max_scrapping_pages      : 2,
             max_scrapping_pages      : 200,
             username_to_search       : "",
             username_current         : "",
+
+            popup_show       : false,
+            popup_title      : "Test",
+            popup_description: "🙄",
         };
     }
 
@@ -86,6 +90,7 @@ class App extends Component {
     render()
     {
         let audio_pop = new Audio("/pop_0.mp3");
+        audio_pop.volume = 0.2;
 
         // this.max_scrapping_pages = 2;
 
@@ -103,6 +108,11 @@ class App extends Component {
                 prev_state => ({muted: !prev_state.muted}), 
                 ()         => {Cookies.set('muted', this.state.muted.toString()); console.log("Toggled !...", this.state.muted.toString()) }
             )
+        }
+
+        const toggle_popup_window = () =>
+        {
+            this.setState({popup_show: !this.state.popup_show});
         }
 
         // console.log(
@@ -145,6 +155,15 @@ class App extends Component {
                 minHeight         : "100%",
             }}>
             
+            {
+                this.state.popup_show && 
+                <Popup
+                    title          = {this.state.popup_title}
+                    description    = {this.state.popup_description}
+                    function_close = {toggle_popup_window}
+                />
+            }
+
             {/* <div className="element_spacer"></div> */}
 
             {/* 😚 Container of the elements ! */}
@@ -203,7 +222,20 @@ class App extends Component {
                             marginLeft: "0px",
                         }}
                         // onClick={() => {this.setState({username_current: "egeres"})}}
-                        onClick={() => {this.setState({username_current: this.state.username_to_search}) ; this.extract_user_data()}}
+                        onClick={() => {
+
+                            console.log("clicking...")
+
+                            if (this.state.username_current !== this.state.username_to_search)
+                            {
+                                this.setState({username_current: this.state.username_to_search}); 
+                                this.extract_user_data().then(x => { console.log("Exiting...", x)});
+                            }
+
+                            if (!this.state.muted && this.state.username_current !== this.state.username_to_search) {audio_pop.play()}
+                        
+                            // toggle_popup_window()
+                        }}
                     >
                         Go !
                     </button>
@@ -212,9 +244,9 @@ class App extends Component {
 
                     <div style={{height:"100%", display:"flex", justifyContent:"center", backgroundColor:"transparent", alignItems:"center"}}>
                         <Link to="/"      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
-                        <p>-</p>
+                        <p style={{color:"#343434"}}>-</p>
                         <Link to="/table" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
-                        <p>-</p>
+                        <p style={{color:"#343434"}}>-</p>
                         {/* <p>-</p>
                         <Link to="/users" className="link_router">Users</Link> */}
 
@@ -279,6 +311,11 @@ class App extends Component {
                         />
                         {/* <TableContainer columns={this.columns} data={data_test} /> */}
                         {/* </div> */}
+                    </Route>
+                    <Route path="/why">
+                        <div style={{width:"80%", fontSize:"18px"}}>
+                        Github is a wonderful tool not just for storing and management of repositories in the cloud. It also serves as a personal library of bookmarks of useful projects which might aid us in the future. This open source project only attempts to provide new means to extract insight from the starred repos of a user as well as ease the navigation process through them.
+                        </div>
                     </Route>
                 </Switch>
                 </Router>
@@ -520,6 +557,8 @@ class App extends Component {
 
     async extract_user_data()
     {
+        // The amount of stars is resetted
+        this.setState({stars_count: 0})
 
         const get_repos_API = (user, page=0) => axios
             .get(`https://api.github.com/users/${user}/starred?per_page=100&page=${page+1}`)
@@ -559,6 +598,13 @@ class App extends Component {
                 (res)   => { if(res.status === 200) { return res.data } },
                 (error) => { console.log(error)}
             )
+        
+        function sleep(ms)
+        {
+            return new Promise((resolve) => { setTimeout(resolve, ms); });
+        }
+
+        await sleep(100);
 
         console.log("Extracting user data...")
 
@@ -566,54 +612,98 @@ class App extends Component {
         let list_of_repos = []
             
         // We first get a full list of all the repositories (A while loop would be better tho...)
-        for (let page = 0; page < this.state.max_scrapping_pages; page++)
+        try
         {
-            console.log("Extracting page", page, "...")
-            // extracted = await get_repos_API("egeres", page).then(x => {return x})
-
-            if (this.state.username_current !== "")
+            for (let page = 0; page < this.state.max_scrapping_pages; page++)
             {
-                extracted = await get_repos_API(this.state.username_current, page).then(x => {return x})
+                console.log("Extracting page", page, "...")
+                // extracted = await get_repos_API("egeres", page).then(x => {return x})
+
+                if (this.state.username_current !== "")
+                {
+                    extracted = await get_repos_API(this.state.username_current, page)
+                    .then( x => {return x})
+                    .catch(e => {
+                        if (e.response.status === 404) { console.log("...0"); return "error 404"; }
+                        if (e.response.status === 403) { console.log("...1"); return "error 403"; }
+                    });
+                    
+                    console.log("extracted =", extracted)
+
+                    if (extracted === null) { return ""; break; }
+                    if (extracted === "error 404") {
+                        this.setState({
+                            popup_title      : "Error 404 🤔",
+                            popup_description: ["You sure you spelled that username correctly ?", "I bet not"],
+                        })
+                        this.toggle_popup_window();
+                        return "";
+                        break; 
+                    }
+                    if (extracted === "error 403") {
+                        this.setState({
+                            popup_title      : "Error 403 ✋🏻",
+                            popup_description: ["Okay, this is a weird one. Turns out, this is a front-end only website, meaning, it directly calls Github's API without any kind of token. The problem with this is that such API has a limited amount of 60 requests per hour by IP address. You can consult how many of such tokens you have left at https://api.github.com/rate_limit", "TLDR: You gotta wait an hour 😢"],
+                        })
+                        this.toggle_popup_window();
+                        return "";
+                        break; 
+                    }
+                    console.log("Nothing 0")
+                }
+                else
+                {
+                    extracted = [];
+                }
+
+                
+                if (extracted.length === 0) { break; }
+                else                        { 
+                    list_of_repos = list_of_repos.concat(extracted); 
+                    this.setState({stars_count: list_of_repos.length})
+                }
             }
-            else
+
+            // Topics are extracted from a local database not to overuse github's API limit of anonymous requests
+            for (let i = 0; i < list_of_repos.length; i++)
             {
-                extracted = [];
+                console.log("x", i)
+                if (list_of_repos[i].full_name in Local_database) { list_of_repos[i].topics = Local_database[list_of_repos[i].full_name] }
+                else { list_of_repos[i].topics = []; }
             }
 
-            
-            if (extracted.length === 0) { break; }
-            else                        { 
-                list_of_repos = list_of_repos.concat(extracted); 
-                this.setState({stars_count: list_of_repos.length})
+            this.setState({list_of_starred: list_of_repos})
+
+            console.log("Nothing 1")
+
+            // We update the distribution of languages !
+            let tmp = {};
+            for await (let repo of list_of_repos)
+            {
+                if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
+                else                         { tmp[repo.language]++;  }
             }
-        }
+            this.setState({distribution_of_languages: tmp})
 
-        // Topics are extracted from a local database not to overuse github's API limit of anonymous requests
-        for (let i = 0; i < list_of_repos.length; i++)
+            console.log("Nothing 2")
+        }
+        catch(err)
         {
-            if (list_of_repos[i].full_name in Local_database) { list_of_repos[i].topics = Local_database[list_of_repos[i].full_name] }
-            else { list_of_repos[i].topics = []; }
+            console.log("err", err)
         }
+    }
 
-        this.setState({list_of_starred: list_of_repos})
-
-        // We update the distribution of languages !
-        let tmp = {};
-        for await (let repo of list_of_repos)
-        {
-            if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
-            else                         { tmp[repo.language]++;  }
-        }
-        this.setState({distribution_of_languages: tmp})
-
+    toggle_popup_window = () =>
+    {
+        this.setState({popup_show: !this.state.popup_show});
     }
 }
 
 const Button_toggle_sound = (props) => {
     return (
         <div>
-            <div className={props.onoroff ? 'display_flex' : 'display_hidden'}> <i  data-eva="volume-off-outline" fill="#343434"></i> </div>
-            <div className={props.onoroff ? 'display_hidden' : 'display_flex'}> <i  data-eva="volume-up-outline"  fill="#343434"></i> </div>
+            <div className={props.onoroff ? 'display_flex'   : 'display_hidden'}> <i  data-eva="volume-off-outline" fill="#343434"></i> </div>
+            <div className={props.onoroff ? 'display_hidden' : 'display_flex'  }> <i  data-eva="volume-up-outline"  fill="#343434"></i> </div>
         </div>
     )
 }

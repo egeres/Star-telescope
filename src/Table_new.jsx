@@ -392,6 +392,7 @@ function Table({columns, data}) {
           />
         </span>{" "}
         <select
+          style={{height:"25px"}}
           value={pageSize}
           onChange={(e) => {
             setPageSize(Number(e.target.value));

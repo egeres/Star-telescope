@@ -9,7 +9,8 @@ export default class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            current_counter_value:0
+            old_counter_value    : 0,
+            current_counter_value: 0,
         }
     }
 
@@ -65,6 +66,21 @@ export default class Header extends Component {
                 <div style={{backgroundColor:"#000", width:"200px", height:"200px", borderRadius:"50%", position:"absolute"}}></div>
                 {/* <div style={{backgroundColor:"red",  width:"200px", height:"200px", borderRadius:"50%", position:"absolute"}}></div> */}
                 <img src={this.state.user_profilepic} style={{width:"200px", position:"absolute", borderRadius:"50%"}} />
+
+                {/* <div style={{
+                    position   : "absolute",
+                    fontSize   : "50px",
+                    textAlign  : "center",
+                    marginLeft : "auto",
+                    marginRight: "auto",
+                    left       : 0,
+                    right      : 0,
+                    color      : "#f0f0f0",
+                    translate  : "translate(3px, 3px)",
+                }}>
+                    {(this.props.star_count == 0) ? '' : <CountUp end={this.props.star_count} />}
+                </div> */}
+
                 <div style={{
                     position   : "absolute",
                     fontSize   : "50px",
@@ -74,10 +90,15 @@ export default class Header extends Component {
                     left       : 0,
                     right      : 0,
                     color      : "#e62424",
+                    textShadow : "3px 3px #0e0e0e",
                 }}>
                     {/* 999999 */}
                     {/* {this.props.star_count} */}
-                    <CountUp end={this.props.star_count} />
+                    {/* <CountUp end={this.props.star_count} /> */}
+                    {/* {if (True) { return(<p>asd</p>) }} */}
+                    {/* {false ? 'Edit' : 'Save'} */}
+                    {/* {if (flase) {"asdasd"} else { "asd"}} */}
+                    {(this.props.star_count == 0) ? '' : <CountUp end={this.props.star_count} />}
                 </div>
             </div>
 
@@ -143,25 +164,38 @@ export default class Header extends Component {
         const user_profileinfo = (user) => axios
         .get(`https://api.github.com/users/${user}`)
         .then((res) => res.data);
+        // .catch(e => {if (e.response.status === 404) {}});
 
     //     // user_prof("egeres").then(console.log);
     //     // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
 
         // if (res.avatar_url !== this.state.user_profilepic)
         // {
-            
-        user_profileinfo(this.props.user).then(
-            (res) => {
-                // console.log("asdadsads");
-    //             // console.log(res);
-    //             // console.log(res.avatar_url)
-
-                if (res.avatar_url !== this.state.user_profilepic)
-                {
-                    this.setState({ user_profilepic: res.avatar_url})
+        
+        try
+        {
+            user_profileinfo(this.props.user)
+            .then(
+                (res) => {
+                    // console.log("asdadsads");
+                    // console.log(res);
+                    // console.log(res.avatar_url)
+                    if (res.avatar_url !== this.state.user_profilepic)
+                    {
+                        this.setState({ user_profilepic: res.avatar_url})
+                    }
                 }
-            }
-        );
+            ).catch(e => {
+                if (e.response.status === 404 && this.state.user_profilepic !== "/unknown.png"  ) { this.setState({ user_profilepic: "/unknown.png"  }) }
+                if (e.response.status === 403 && this.state.user_profilepic !== "/error_403.png") { this.setState({ user_profilepic: "/error_403.png"}) }
+            });
+            ;
+        }
+        catch (err)
+        {
+            console.log(err)
+        }
+
         // }
 
         // for (let i = 0; i < 100; i++) {
