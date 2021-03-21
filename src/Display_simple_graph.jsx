@@ -5,9 +5,9 @@
 // https://observablehq.com/@d3/brushable-scatterplot
 
 import React, { Component } from "react";
-import * as d3 from "d3";
-import { svg } from "d3";
-import PropTypes from 'prop-types';
+import * as d3              from "d3";
+import { svg }              from "d3";
+import PropTypes            from 'prop-types';
 
 export default class Display_simple_graph extends Component
 {
@@ -38,6 +38,7 @@ export default class Display_simple_graph extends Component
     {
         let svg     = d3.select(this.myself.current);
         let tooltip = d3.select("#Tooltip")
+        let thiz    = this
 
         svg.selectAll("*").remove();
 
@@ -105,7 +106,9 @@ export default class Display_simple_graph extends Component
                     .style("font-size", "16px") 
                     // .style("text-decoration", "underline") 
                     .attr("fill", "white")
-                    .text(d => d);
+                    // .text(d => d)
+                    // .text("xx")
+                    .text(y => thiz.func_axis_y(y))
 
             svg.selectAll("Lol")
                 .data(y_axis.map(x => x*x_max))
@@ -117,7 +120,8 @@ export default class Display_simple_graph extends Component
                     .style("font-size", "16px") 
                     // .style("text-decoration", "underline") 
                     .attr("fill", "white")
-                    .text(d => d);
+                    // .text(d => d)
+                    .text(x => thiz.func_axis_x(x))
     
             svg.selectAll("whatever")
                 .data(this.props.data)
@@ -129,18 +133,20 @@ export default class Display_simple_graph extends Component
                     .attr('opacity', 0.3)
                     .style("fill", "#8c8c8c")
 
-                    .on("mouseover", function(d) {
+                    .on("mouseover", function(d, i) {
                         // console.log(d)
                         tooltip.transition()		
                             .duration(200)		
                             .style("opacity", .9);		
                         tooltip
-                            .html(d + "<br/>")	
+                            // .html(func_tooltip(d, i) "<br/>")	
+                            .html(thiz.props.func_tooltip(d, i))	
                             .style("left", (d.clientX) + "px")		
                             .style("top",  (d.clientY - 28) + "px");	
 
                         d3.select(this).style("opacity", 1)
-                    })					
+                    })
+
                     .on("mouseout", function(d) {		
                         tooltip.transition()		
                             .duration(500)		
@@ -153,15 +159,21 @@ export default class Display_simple_graph extends Component
 }
 
 Display_simple_graph.propTypes = {
-    width : PropTypes.number,
-    height: PropTypes.number,
-    margin: PropTypes.number,
-    data  : PropTypes.array,
+    width       : PropTypes.number,
+    height      : PropTypes.number,
+    margin      : PropTypes.number,
+    data        : PropTypes.array,
+    func_tooltip: PropTypes.func,
+    func_axis_x : PropTypes.func,
+    func_axis_y : PropTypes.func,
 };
 
 Display_simple_graph.defaultProps = {
-    width : 1000,
-    height: 1000,
-    margin: 10,
-    data  : [],
+    width       : 1000,
+    height      : 1000,
+    margin      : 10,
+    data        : [],
+    func_tooltip: (d, i) => {console.log(d);console.log(i); return "Tooltip " + i},
+    func_axis_x : (x)    => {return "|"+x+"|"},
+    func_axis_y : (y)    => {return "|"+y+"|"},
 };

@@ -6,11 +6,13 @@ import CountUp from 'react-countup';
 
 export default class Header extends Component {
 
+
     constructor(props) {
         super(props);
         this.state = {
             old_counter_value    : 0,
             current_counter_value: 0,
+            last_searched        : "",
         }
     }
 
@@ -159,49 +161,52 @@ export default class Header extends Component {
         if (this.props.user !== "")
         {
 
-        
-        // console.log("...")
-        const user_profileinfo = (user) => axios
-        .get(`https://api.github.com/users/${user}`)
-        .then((res) => res.data);
-        // .catch(e => {if (e.response.status === 404) {}});
+            if (this.state.last_searched != this.props.user)
+            {
+                this.setState({last_searched:this.props.user})
 
-    //     // user_prof("egeres").then(console.log);
-    //     // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
+                // console.log("...")
+                const user_profileinfo = (user) => axios
+                .get(`https://api.github.com/users/${user}`)
+                .then((res) => res.data);
+                // .catch(e => {if (e.response.status === 404) {}});
 
-        // if (res.avatar_url !== this.state.user_profilepic)
-        // {
-        
-        try
-        {
-            user_profileinfo(this.props.user)
-            .then(
-                (res) => {
-                    // console.log("asdadsads");
-                    // console.log(res);
-                    // console.log(res.avatar_url)
-                    if (res.avatar_url !== this.state.user_profilepic)
-                    {
-                        this.setState({ user_profilepic: res.avatar_url})
-                    }
+                // user_prof("egeres").then(console.log);
+                // user_prof("egeres").then((res) => {console.log("asdadsads");console.log(res);console.log(res.avatar_url)});
+
+                // if (res.avatar_url !== this.state.user_profilepic)
+                // {
+                
+                try
+                {
+                    user_profileinfo(this.props.user)
+                    .then(
+                        (res) => {
+                            // console.log("asdadsads");
+                            // console.log(res);
+                            // console.log(res.avatar_url)
+                            if (res.avatar_url !== this.state.user_profilepic)
+                            {
+                                this.setState({ user_profilepic: res.avatar_url})
+                            }
+                        }
+                    ).catch(e => {
+                        if (e.response.status === 404 && this.state.user_profilepic !== "/unknown.png"  ) { this.setState({ user_profilepic: "/unknown.png"  }) }
+                        if (e.response.status === 403 && this.state.user_profilepic !== "/error_403.png") { this.setState({ user_profilepic: "/error_403.png"}) }
+                    });
+                    ;
                 }
-            ).catch(e => {
-                if (e.response.status === 404 && this.state.user_profilepic !== "/unknown.png"  ) { this.setState({ user_profilepic: "/unknown.png"  }) }
-                if (e.response.status === 403 && this.state.user_profilepic !== "/error_403.png") { this.setState({ user_profilepic: "/error_403.png"}) }
-            });
-            ;
-        }
-        catch (err)
-        {
-            console.log(err)
-        }
+                catch (err)
+                {
+                    console.log(err)
+                }
 
-        // }
+                // }
 
-        // for (let i = 0; i < 100; i++) {
-        //     // const element = array[i];
-            
-        // }
+                // for (let i = 0; i < 100; i++) {
+                //     // const element = array[i];
+                // }
+            }
 
 
         }

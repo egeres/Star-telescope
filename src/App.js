@@ -282,14 +282,16 @@ class App extends Component {
                             display:"flex"
                         }}>
                             <Display_simple_graph
-                            data = {
-                            Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
-                            .filter(x => !isNaN(x))
-                            .map((v, i) => {return {"x":i, "y":v}})
-                            }
-                            width  = {500}
-                            height = {500}
-                            margin = {50  }
+                                width        = {500}
+                                height       = {500}
+                                margin       = {50 }
+                                func_tooltip = {(d, i) => {return " " + i.y + " repos with " + i.x*10 + "K stars"}}
+                                func_axis_x  = { x     => {return x*10+"K"}}
+                                data         = {
+                                    Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 10000)
+                                    .filter(x => !isNaN(x))
+                                    .map((v, i) => {return {"x":i, "y":v}})
+                                }
                             />
 
                             <Display_bubble_graph
@@ -628,13 +630,92 @@ class App extends Component {
                         if (e.response.status === 403) { console.log("...1"); return "error 403"; }
                     });
                     
-                    console.log("extracted =", extracted)
+                    // console.log("extracted =", extracted)
 
                     if (extracted === null) { return ""; break; }
                     if (extracted === "error 404") {
+
+                        let array_of_witty_responses = [
+                            [
+                                "You sure you spelled that username correctly ?", 
+                                "I bet not",
+                            ],
+                            [
+                                "API gave error 404, sounds like you misspelled the username", 
+                                "I'm gladly accepting any pull requests that add some kind of logic to interpolate and search the most probable name",
+                            ],
+                            [
+                                "It's possible that you come from the future and are now realizing that the username you searched for doesn't exist yet",
+                                "But occam's razor tells me to guess that you made a typo on the name",
+                            ],
+                            [
+                                "Did you wrote a typo in the nickname, or were you just presing keys at random ? I'm curious",
+                            ],
+                            [
+                                "If I were smarter I would have coded a system to guess what you were going to type",
+                            ],
+                            [
+                                "Error 404 is so mainstream that I can gloss over it's meaning, right ?",
+                                "Go check what you typed again !",
+                            ],
+                            [
+                                "It's possible that you're testing names at random on the search bar",
+                                "If that's the case, I'll say I was VERY dissapointed by the username '0'",
+                                "I was expecting something more interesting"
+                            ],
+                            [
+                                "Funny enough, many 404 errors are time-dependent",
+                                "Meaning, you didn't necessarily wrote an incorrect username per se, just at the wrong time",
+                                "Such username might be created at the future",
+                            ],
+                            [
+                                "I think you know what this error means",
+                                "Also, it's kinda addictive to stalk people using this application",
+                                "Have you tried typing funny usernames at random ?",
+                                "Worse case scenario, you get one of these 'randomly chosen' 404 errors, which are already funny by themselves",
+                            ],
+                            [
+                                "I just realized I could have coded a system that procedurally generates a user with random starred repos so that this would never retrieve error 404",
+                            ],
+                            [
+                                "Nope, that name doesn't exist",
+                            ],
+                            [
+                                "I'm very sorry that the name you wrote isn't registered in Github",
+                                "But things sometimes have a good point of view, were you intrigued if you could register that name yourself ?",
+                                "In that case, this error might just be the best news in your day !",
+                            ],
+                            [
+                                "Oh, sadly you got error 404...",
+                                "Tell you what, here's a joke",
+                                "",
+                                "There are 10 types of people in the world:",
+                                "- Those who understand binary",
+                                "- Those who don't",
+                                "- Those who understand that '10' can actually refer to any numeric base ranging from binary to infinity",
+                                "",
+                                "(I bet you didn't see that coming 😉)",
+                            ],
+                            [
+                                "Yeah, you couldn't find that username, sorry :/",
+                                "Funny enough, these messages are randomly scripted, so they change from error to error",
+                                "I wonder if this is the first one you see or if you're trying to catch them all",
+                                "In theory you could never be really really certain of having seen the all (without peeking at the source code) since they are chosen at random",
+                            ],
+                            [
+                                "Nooope, doesn't ring a bell",
+                            ],
+                            [
+                                "I'm kinda tired of trying to come up with witty lines to make these errors more entertaining",
+                                "Never though creating easter eggs would drain so much energy..."
+                            ]
+                        ]
+
+                        let witty_response =  array_of_witty_responses[Math.floor(Math.random() * array_of_witty_responses.length)]
+
                         this.setState({
                             popup_title      : "Error 404 🤔",
-                            popup_description: ["You sure you spelled that username correctly ?", "I bet not"],
+                            popup_description: witty_response,
                         })
                         this.toggle_popup_window();
                         return "";
@@ -643,13 +724,16 @@ class App extends Component {
                     if (extracted === "error 403") {
                         this.setState({
                             popup_title      : "Error 403 ✋🏻",
-                            popup_description: ["Okay, this is a weird one. Turns out, this is a front-end only website, meaning, it directly calls Github's API without any kind of token. The problem with this is that such API has a limited amount of 60 requests per hour by IP address. You can consult how many of such tokens you have left at https://api.github.com/rate_limit", "TLDR: You gotta wait an hour 😢"],
+                            popup_description: [
+                                "Okay, this is a weird one...",
+                                "Turns out, this is a front-end-only website. I.e, it directly calls Github's API without any kind of token. The problem with this is that the former has a limited amount of 60 requests per hour by IP address. You can consult how many of such tokens you have left at https://api.github.com/rate_limit. I'm open to better ideas different from using such an API system as long as they keep the no-backend spirit of the proyect. Thanks for understanding !", 
+                                "TLDR: You gotta wait an hour 😢"
+                            ],
                         })
                         this.toggle_popup_window();
                         return "";
                         break; 
                     }
-                    console.log("Nothing 0")
                 }
                 else
                 {
@@ -667,14 +751,12 @@ class App extends Component {
             // Topics are extracted from a local database not to overuse github's API limit of anonymous requests
             for (let i = 0; i < list_of_repos.length; i++)
             {
-                console.log("x", i)
                 if (list_of_repos[i].full_name in Local_database) { list_of_repos[i].topics = Local_database[list_of_repos[i].full_name] }
                 else { list_of_repos[i].topics = []; }
             }
 
             this.setState({list_of_starred: list_of_repos})
 
-            console.log("Nothing 1")
 
             // We update the distribution of languages !
             let tmp = {};
@@ -685,7 +767,6 @@ class App extends Component {
             }
             this.setState({distribution_of_languages: tmp})
 
-            console.log("Nothing 2")
         }
         catch(err)
         {
