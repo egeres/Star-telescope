@@ -89,7 +89,9 @@ class App extends Component {
 
     render()
     {
-        let audio_pop = new Audio("/Star-telescope/pop_0.mp3");
+        let root_origin  = "";
+        root_origin      = "/Star-telescope"
+        let audio_pop    = new Audio(root_origin+"/pop_0.mp3");
         audio_pop.volume = 0.2;
 
         // this.max_scrapping_pages = 2;
@@ -244,12 +246,12 @@ class App extends Component {
 
                     <div style={{height:"100%", display:"flex", justifyContent:"center", backgroundColor:"transparent", alignItems:"center"}}>
 
-                        <Link to="/"      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
+                        <Link to={root_origin+"/"}      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
                         
                         {/* <p style={{color:"#343434"}}>-</p> */}
                         <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
                         
-                        <Link to="/table" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
+                        <Link to={root_origin+"/table"} className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
                         
                         {/* <p style={{color:"#343434"}}>-</p> */}
                         <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
@@ -269,7 +271,7 @@ class App extends Component {
                             <i data-eva="star-outline" fill="#343434"></i>
                         </div> */}
 
-                        <Link to="/why" className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}} style={{height:"24px"}}>
+                        <Link to={root_origin+"/why"} className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}} style={{height:"24px"}}>
                             <i data-eva="question-mark-outline" fill="#343434"></i>
                         </Link>
 
@@ -306,7 +308,7 @@ class App extends Component {
                 <div className="element_spacer"></div>
 
                 <Switch>
-                    <Route exact path="/">
+                    <Route exact path={root_origin+"/"}>
 
                         <div style={{
                             display:"flex"
@@ -333,7 +335,7 @@ class App extends Component {
 
                         </div> 
                     </Route>
-                    <Route path="/table" style={{overflow:"hidden"}}>
+                    <Route       path={root_origin+"/table"} style={{overflow:"hidden"}}>
                         {/* <div> */}
                         {/* <TableContainer columns={this.columns} data={this.data} /> */}
                         <TableContainer 
@@ -344,7 +346,7 @@ class App extends Component {
                         {/* <TableContainer columns={this.columns} data={data_test} /> */}
                         {/* </div> */}
                     </Route>
-                    <Route path="/why">
+                    <Route       path={root_origin+"/why"}>
                         <div style={{width:"80%", fontSize:"18px"}}>
                         Github is a wonderful tool not just for storing and management of repositories in the cloud. It also serves as a personal library of bookmarks of useful projects which might aid us in the future. This open source project only attempts to provide new means to extract insight from the starred repos of a user as well as ease the navigation process through them.
                         </div>
