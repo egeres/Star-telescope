@@ -31,6 +31,7 @@
 - [x] Fix bug search in columns
 - [ ] Clean code 😩
 - [x] .css hide scrolling bar from table view
+- [ ] Fix route on navigation router
 
 
 

@@ -71,30 +71,12 @@ class App extends Component {
         };
     }
 
-    // state_toggle_mute()
-    // {
-    //     console.log("Toggling...", this.state.muted)
-    //     // if (this.state.muted) { this.setState({muted: false}) }
-    //     // else                  { this.setState({muted: true }) }
-    //     this.setState(prev_state => ({muted: !prev_state.muted}))
-    // }
-
-    // state_toggle_mute(context)
-    // {
-    //     if (context.state.muted) { context.setState({muted: false}) }
-    //     else                     { context.setState({muted: true }) }
-    // }
-
-
-
     render()
     {
         let root_origin  = "";
         root_origin      = "/Star-telescope"
         let audio_pop    = new Audio(root_origin+"/pop_0.mp3");
         audio_pop.volume = 0.2;
-
-        // this.max_scrapping_pages = 2;
 
         const handleChange_username = (event) =>
         {
@@ -103,9 +85,6 @@ class App extends Component {
 
         const state_toggle_mute = () =>
         {
-            // console.log("Toggling...", this.state.muted)
-            // if (this.state.muted) { this.setState({muted: false}) }
-            // else                  { this.setState({muted: true }) }
             this.setState(
                 prev_state => ({muted: !prev_state.muted}), 
                 ()         => {Cookies.set('muted', this.state.muted.toString()); console.log("Toggled !...", this.state.muted.toString()) }
@@ -117,75 +96,35 @@ class App extends Component {
             this.setState({popup_show: !this.state.popup_show});
         }
 
-        // console.log(
-        //     this.state.list_of_starred.map(x => x.stargazers_count)
-        // )
-        // console.log(
-        //     Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 5000)
-        //     .filter(x => !isNaN(x))
-        // )
-        // console.log(
-        //     "asdadsd",
-        //     Data_digitize(this.state.list_of_starred.map(x => x.stargazers_count), 5000)
-        //     .filter(x => !isNaN(x))
-        //     .map((v, i) => {return {"x":i, "y":v}})
-        // )
-
-        // function render_volume_state()
-        // {
-        //     console.log("Renderig...")
-        //     if (this.state.muted) { return ( <div onClick={this.state.state_toggle_mute()} > <i data-eva="volume-off-outline"  fill="#343434"></i> </div> ) }
-        //     else                  { return ( <div onClick={this.state.state_toggle_mute()} > <i data-eva="volume-up-outline"   fill="#343434"></i> </div> ) }
-        // }
-
-        // const render_volume_state = () =>
-        // {
-        //     console.log("Renderig...", this)
-        //     return ( <h1>asd</h1>)
-        //     // return ( <h1>{context.sate.muted}</h1>)
-        //     // if (context.state.muted) { return ( <div onClick={context.state_toggle_mute()} > <i data-eva="volume-off-outline"  fill="#343434"></i> </div> ) }
-        //     // else                     { return ( <div onClick={context.state_toggle_mute()} > <i data-eva="volume-up-outline"   fill="#343434"></i> </div> ) }
-        // }
-
         return (
 
             <div style={{ 
                 backgroundColor: "black",
-                // height         : "100%",
                 display        : "flex",
                 justifyContent : "center",
-                minHeight         : "100%",
+                minHeight      : "100%",
             }}>
             
-            {
-                this.state.popup_show && 
-                <Popup
-                    title          = {this.state.popup_title}
-                    description    = {this.state.popup_description}
-                    function_close = {toggle_popup_window}
-                />
-            }
+            {this.state.popup_show && <Popup
+                title          = {this.state.popup_title}
+                description    = {this.state.popup_description}
+                function_close = {toggle_popup_window}
+            />}
 
-            {/* <div className="element_spacer"></div> */}
-
-            {/* 😚 Container of the elements ! */}
             <div 
-            className="background_grid_50"
-            style={{ 
-                backgroundColor: "#0e0e0e",
-                // backgroundColor: "red",
-                // height         : "100%",
-                minHeight    : "100%",
-                width        : "1000px",
-                display      : "flex",
-                flexDirection: "column",
-                alignItems   : "center",
+                className="background_grid_50"
+                style={{ 
+                    backgroundColor: "#0e0e0e",
+                    minHeight      : "100%",
+                    width          : "1000px",
+                    display        : "flex",
+                    flexDirection  : "column",
+                    alignItems     : "center",
             }}>
                 <Tooltip></Tooltip>
 
                 <div className="element_spacer"></div>
 
-                {/* <Header user="egeres"></Header> */}
                 <Header 
                     user       = {this.state.username_current}
                     star_count = {this.state.stars_count}
@@ -196,22 +135,17 @@ class App extends Component {
                 <Router>
                 <nav className="Navigation_bar">
 
-                    {/* <div style={{height:"100%"}}>asdasd</div> */}
                     <input
                         id="input_username"
                         style        = {{ 
                             width          : "223px",
                             backgroundColor: "#0e0e0e",
-                            // border         : 'none',
-                            borderColor: "#343434",
-                            borderStyle: "solid",
-                            fontSize   : "16px",
-                            margin     : "10px",
-                            marginRight: "0px",
-                            color      : "#343434",
-
-                            // font-size: 20px;
-                            // background-color: #343434;
+                            borderColor    : "#343434",
+                            borderStyle    : "solid",
+                            fontSize       : "16px",
+                            margin         : "10px",
+                            marginRight    : "0px",
+                            color          : "#343434",
                         }}
                         placeholder = "username to search 😀"
                         value       = {this.state.username_to_search}
@@ -223,20 +157,13 @@ class App extends Component {
                             margin    : "10px",
                             marginLeft: "0px",
                         }}
-                        // onClick={() => {this.setState({username_current: "egeres"})}}
                         onClick={() => {
-
-                            console.log("clicking...")
-
                             if (this.state.username_current !== this.state.username_to_search)
                             {
                                 this.setState({username_current: this.state.username_to_search}); 
                                 this.extract_user_data().then(x => { console.log("Exiting...", x)});
                             }
-
                             if (!this.state.muted && this.state.username_current !== this.state.username_to_search) {audio_pop.play()}
-                        
-                            // toggle_popup_window()
                         }}
                     >
                         Go !
@@ -248,60 +175,28 @@ class App extends Component {
 
                         <Link to={root_origin+"/"}      className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Overview</Link>
                         
-                        {/* <p style={{color:"#343434"}}>-</p> */}
-                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
-                        
+                        <block_mini/>
+
                         <Link to={root_origin+"/table"} className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}}>Table</Link>
                         
-                        {/* <p style={{color:"#343434"}}>-</p> */}
-                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
-
-                        {/* <p>-</p>
-                        <Link to="/users" className="link_router">Users</Link> */}
-
-                        {/* {
-                            if (true) { return <a> </a>}
-                        } */}
-
-                        {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute}></Button_toggle_sound> */}
-                        {/* <Button_toggle_sound onoroff={this.state.muted} onClick={this.state_toggle_mute.bind(this)}></Button_toggle_sound> */}
-                        {/* <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound> */}
-
-                        {/* <div onClick={() => {window.open("/why", "_blank");}} style={{margin:"10px"}}>
-                            <i data-eva="star-outline" fill="#343434"></i>
-                        </div> */}
+                        <block_mini/>
 
                         <Link to={root_origin+"/why"} className="link_router" onClick={()=>{if (!this.state.muted) {audio_pop.play()}}} style={{height:"24px"}}>
                             <i data-eva="question-mark-outline" fill="#343434"></i>
                         </Link>
 
-                        
-                        {/* <a href="/why" target="_blank" style={{margin:"10px" , height:"24px"}}>
-                            <i data-eva="question-mark-outline" fill="#343434"></i>
-                        </a> */}
-
-                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
+                        <block_mini/>
 
                         <a href="https://github.com/egeres/Star-telescope" target="_blank" style={{margin:"10px" , height:"24px"}}>
                             <i data-eva="star-outline" fill="#343434"></i>
                         </a>
 
-                        {/* <p style={{color:"#343434"}}>-</p> */}
-                        <div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>
+                        <block_mini/>
 
                         <div onClick={() => state_toggle_mute()} style={{margin:"10px"}}>
                             <Button_toggle_sound onoroff={this.state.muted}></Button_toggle_sound>
                         </div>
 
-                        {/* <p onClick={this.state_toggle_mute()} >asdasdads</p> */}
-                        {/* <p onClick={() => state_toggle_mute()} >asdasdads</p> */}
-
-
-                        {/* {render_volume_state.bind(this)} */}
-                        {/* {render_volume_state(this)} */}
-
-                        {/* <i data-eva="volume-up-outline" fill="#343434"></i>
-                        <i data-eva="volume-off-outline" fill="#343434"></i> */}
                     </div>
                 </nav>
 
@@ -366,7 +261,7 @@ class App extends Component {
         let to_return = []
         data.forEach(element => {
 
-            let   hehe    = (Math.round(element.stargazers_count/1000)*1000)/1000
+            let hehe = (Math.round(element.stargazers_count/1000)*1000)/1000
             
             let was_incremented = false;
             for (let i = 0; i < to_return.length; i++) {
@@ -382,48 +277,30 @@ class App extends Component {
 
         });
 
-        // console.log(to_return)
         return to_return
-        // return [{x:10, y:10}, {x:20, y:20}]
     }
 
     componentWillMount()
     {
-
-        // this.columns = [
-        //     { Header: "Name",     accessor: "name",             },
-        //     { Header: "Stars",    accessor: "stargazers_count", },
-        //     { Header: "Language", accessor: "language",         },
-        //     { Header: "Topics",   accessor: "topics", Cell: ({ cell: { value } }) => ( <Genres values={value} /> ), },
-        // ];
-
         this.columns = [
             {
-                "id": "columnId_0_00.3993265160822733",
-                "Header": "Name",
-                "Footer": "",
-                // "accessor": "name",
-                // "accessor": "full_name",
+                "id"      : "columnId_0_00.3993265160822733",
+                "Header"  : "Name",
+                "Footer"  : "",
                 "accessor": "html_url",
-                // Cell: ({ cell: { value } }) => ( <a href={"https://github.com/"+value}>{value}</a> )
-                Cell: ({ cell: { value } }) => ( <a href={value}>{value.split("/")[ value.split("/").length - 1 ]}</a> )
+                Cell      : ({ cell: { value } }) => ( <a href={value}>{value.split("/")[ value.split("/").length - 1 ]}</a> )
             },
             {
                 "id"      : "columnId_0_00.8048758967415083",
                 "Header"  : "Stars",
                 "Footer"  : "",
                 "accessor": "stargazers_count",
-                // "filter"  : "between",
-                // "width"   : 50,
-                // "minWidth": 50,
-                // "maxWidth": 50,
             },
             {
                 "id"      : "columnId_0_00.9075474765424285",
                 "Header"  : "Language",
                 "Footer"  : "",
                 "accessor": "language",
-                // "filter"  : "includes",
             },
             {
                 "id"      : "columnId_0_00.4798125422028431",
@@ -433,67 +310,6 @@ class App extends Component {
                 Cell      : ({ cell: { value } }) => ( <Genres values={value} /> ),
             }
         ]
-
-        this.data = [
-            {
-                score: 17.592657,
-                show: {
-                    id: 44813,
-                    url: "http://www.tvmaze.com/shows/44813/the-snow-spider",
-                    name: "The Snow Spider",
-                    type: "Scripted",
-                    language: "English",
-                    genres: ["Drama", "Fantasy"],
-                    status: "In Development",
-                    runtime: 30,
-                    premiered: null,
-                    officialSite: null,
-                    schedule: {
-                        time: "",
-                        days: [],
-                    },
-                },
-            },
-            {
-                score: 17.592657,
-                show: {
-                    id: 44813,
-                    url: "http://www.tvmaze.com/shows/44813/the-snow-spider",
-                    name: "The cook",
-                    type: "Scripted",
-                    language: "English",
-                    genres: ["Drama", "Fantasy"],
-                    status: "In Development",
-                    runtime: 20,
-                    premiered: null,
-                    officialSite: null,
-                    schedule: {
-                        time: "",
-                        days: [],
-                    },
-                },
-            },
-            {
-                score: 17.592657,
-                show: {
-                    id: 44813,
-                    url: "http://www.tvmaze.com/shows/44813/the-snow-spider",
-                    name: "The cook",
-                    type: "Scripted",
-                    language: "English",
-                    genres: ["Drama", "Fantasy"],
-                    status: "In Development",
-                    runtime: 50,
-                    premiered: null,
-                    officialSite: null,
-                    schedule: {
-                        time: "",
-                        days: [],
-                    },
-                },
-            },
-        ];
-
     }
 
     async componentDidMount()
@@ -505,89 +321,15 @@ class App extends Component {
         // We set the variables stored in the cookies 🙄
         this.setState(prev_state => ({muted: Cookies.get('muted') === 'true'}))
 
-        // We extract the info from the user! 🥰
-        // this.extract_user_data()
-
         // Small warning 😋
-        if (this.state.max_scrapping_pages != 99999) { console.log("Warning 🤔"); console.log("max_scrapping_pages set to", this.state.max_scrapping_pages)}
-
-
-            
-
-        let list_of_repos = []
-
-        if (false)
-        {
-            let extracted = []
-            
-            // A while loop would be better tho
-            // We first get a full list of all the repositories
-            for (let page = 0; page < this.state.max_scrapping_pages; page++)
-            {
-                // console.log("Extracting page", page, "...")
-                // extracted = await get_repos_API("egeres", page).then(x => {return x})
-                if (extracted.length === 0) { break; }
-                else                        { list_of_repos = list_of_repos.concat(extracted); }
-            }
-
-            // Secondly, we proceed to extract the different topics present on the repo
-            // for await (let info_extracted of list_of_repos)
-            // {                
-            //     info_extracted.topics = await get_topics_API("https://api.github.com/repos/"+info_extracted.full_name+"/topics")
-            //     // info_extracted.topics = info_extracted.topics.names
-            //     // info_extracted.topics = []
-            // }
-            // Since too many API calls are required for the previous approach to work, instead a local database is used
-            // Local_database
-            
-            // console.log(Local_database);
-
-            for (let i = 0; i < list_of_repos.length; i++)
-            {
-                if (list_of_repos[i].full_name in Local_database)
-                {
-                    list_of_repos[i].topics = Local_database[list_of_repos[i].full_name]
-                }
-                else
-                {
-                    list_of_repos[i].topics = [];
-                }
-            }
-
+        if (this.state.max_scrapping_pages != 99999) { 
+            console.log("Warning 🤔");
+            console.log("max_scrapping_pages set to", this.state.max_scrapping_pages)
         }
 
-        // let coso = await get_topics_scrapping("https://github.com/cheeriojs/cheerio")
-        // let coso = await get_topics_scrapping("https://dev.to/aurelkurtula")
-        // console.log(coso)
-
-        // list_of_repos = data_test
-
-        // for await (let info_extracted of list_of_repos) { if (info_extracted.topics === null) { info_extracted.topics = [] } }
-
-        // console.log("Finished extracting information from user...", list_of_repos)        
-
-        // this.setState({list_of_starred: list_of_repos})
-
-        // let tmp = {};
-        // for await (let repo of list_of_repos)
-        // {
-        //     if (!(repo.language in tmp)) { tmp[repo.language] = 1 }
-        //     else                         { tmp[repo.language]++;  }
-        // }
-        // this.setState({distribution_of_languages: tmp})
-
-
-        // get_topics("https://api.github.com/repos/serengil/deepface/topics").then(console.log);
-
-        // https://api.github.com/repos/serengil/deepface/topics
-
-		// https://api.github.com/users/karpathy
-    }
-
-    // async componentDidUpdate()
-    // {
+        // We extract the info from the user! 🥰
         // this.extract_user_data()
-    // }
+    }
 
     async extract_user_data()
     {
@@ -815,6 +557,11 @@ class App extends Component {
         this.setState({popup_show: !this.state.popup_show});
     }
 }
+
+const block_mini = () => {
+    return (<div style={{width:"2px", height:"2px", backgroundColor:"#343434"}}></div>)
+}
+
 
 const Button_toggle_sound = (props) => {
     return (
