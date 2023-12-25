@@ -5,9 +5,16 @@ export default {
     component: Bar_animated,
 };
 
-export const Primary = () => ({
+export const R = () => ({
     Component: Bar_animated,
     props: {
         align: 'R',
+    },
+});
+
+export const L = () => ({
+    Component: Bar_animated,
+    props: {
+        align: 'L',
     },
 });
