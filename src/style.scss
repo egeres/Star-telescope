@@ -1,11 +1,28 @@
 $font-stack: Helvetica, sans-serif;
-$primary-color: red;
+$primary-color: rgb(53, 53, 53);
+$color-accent: rgb(242, 79, 79);
+$corner-radius: 0px;
 
 // body {
 //     font: 100% $font-stack;
 //     color: $primary-color;
 // }
 
-.duh {
+
+div {
+    font-family: Arial, Helvetica, sans-serif;
+    color: $color-accent;
+}
+.graph {
     background-color: $primary-color;
+    border-radius: $corner-radius;
+}
+
+.graph_tooltip {
+    // color: rgb(242, 79, 79);
+    background-color: white;
+    position: absolute;
+
+    // No pointer events so that the tooltip doesn't block mouse events
+    pointer-events: none;
 }

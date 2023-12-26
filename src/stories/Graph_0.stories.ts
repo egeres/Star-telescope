@@ -10,6 +10,6 @@ export const Primary = (args: any) => ({
     props: args,
 });
 Primary.args = {
-    width: "500px",
-    height: "100px",
+    width: 500,
+    height: 500,
 };
