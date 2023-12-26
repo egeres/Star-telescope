@@ -1,28 +1,40 @@
 $font-stack: Helvetica, sans-serif;
+
+
 $primary-color: rgb(53, 53, 53);
+$secondary-color: rgb(171, 171, 171);
 $color-accent: rgb(242, 79, 79);
-$corner-radius: 0px;
+$color-background: rgb(24, 24, 24);
 
-// body {
-//     font: 100% $font-stack;
-//     color: $primary-color;
-// }
+$corner-radius: 20px;
 
+:root {
+    --color-primary: #{$primary-color};
+    --color-secondary: #{$secondary-color};
+    --color-accent: #{$color-accent};
+}
 
 div {
     font-family: Arial, Helvetica, sans-serif;
     color: $color-accent;
 }
+
 .graph {
     background-color: $primary-color;
     border-radius: $corner-radius;
+    border: 1px solid $secondary-color;
 }
 
 .graph_tooltip {
-    // color: rgb(242, 79, 79);
-    background-color: white;
+    background-color: $color-background;
     position: absolute;
-
-    // No pointer events so that the tooltip doesn't block mouse events
     pointer-events: none;
+    padding: 10px;
+    border-radius: $corner-radius;
+    opacity: 0;
+}
+
+.primary {
+    stroke-dasharray: 3, 3;
+    stroke: #fff;
 }

@@ -3,9 +3,12 @@
     // import { svg } from "d3";
     import { onMount } from "svelte";
 
+    import { draw_grid } from "./draw_d3_grid";
+
     export let width = 500;
     export let height = 500;
     export let data = [
+        { x: 40, y: 0 },
         { x: 10, y: 20 },
         { x: 40, y: 90 },
         { x: 80, y: 50 },
@@ -16,8 +19,20 @@
     let margin = 50;
 
     onMount(() => {
+        let primaryColor = getComputedStyle(document.documentElement)
+            .getPropertyValue("--color-primary")
+            .trim();
+        let secondaryColor = getComputedStyle(document.documentElement)
+            .getPropertyValue("--color-secondary")
+            .trim();
+        let colorBackground = getComputedStyle(document.documentElement)
+            .getPropertyValue("--color-background")
+            .trim();
+
         let svg = d3.select(svgElement);
         let tooltip = d3.select(tooltipElement);
+
+        draw_grid(svg, height, width, margin, secondaryColor);
 
         let func_tooltip = (d: any, i: any) => {
             // console.log(d);
@@ -52,11 +67,11 @@
             .enter()
             .append("text")
             .attr("x", 25)
-            .attr("y", (d) => y(d))
+            .attr("y", (d) => y(d) - 2)
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             // .style("text-decoration", "underline")
-            .attr("fill", "white")
+            .attr("fill", secondaryColor)
             // .text(d => d)
             // .text("xx")
             .text((y) => func_axis_y(y));
@@ -65,12 +80,15 @@
             .data(y_axis.map((x) => x * x_max))
             .enter()
             .append("text")
-            .attr("x", (d) => x(d))
-            .attr("y", height - 10)
-            .attr("text-anchor", "middle")
+            .attr("x", (d) => x(d) + 2)
+            .attr("y", height - margin / 2 + 5)
+            .attr("text-anchor", "left")
+
+            // Text is vertically centered
+            // .attr("dominant-baseline", "middle")
             .style("font-size", "16px")
             // .style("text-decoration", "underline")
-            .attr("fill", "white")
+            .attr("fill", secondaryColor)
             // .text(d => d)
             .text((x) => func_axis_x(x));
 
@@ -108,42 +126,6 @@
                 tooltip.transition().duration(100).style("opacity", 0);
                 d3.select(this).style("opacity", 0.3);
             });
-
-        // Bottom horizontal line
-        svg.append("line")
-            .attr("x1", 0)
-            .attr("y1", height - margin)
-            .attr("x2", width)
-            .attr("y2", height - margin)
-            .style("stroke-dasharray", "3, 3")
-            .style("stroke", "#343434");
-
-        // Left vertical line
-        svg.append("line")
-            .attr("x1", margin)
-            .attr("y1", 0)
-            .attr("x2", margin)
-            .attr("y2", height)
-            .style("stroke-dasharray", "3, 3")
-            .style("stroke", "#343434");
-
-        // Top horizontal line
-        svg.append("line")
-            .attr("x1", 0)
-            .attr("y1", margin)
-            .attr("x2", width)
-            .attr("y2", margin)
-            .style("stroke-dasharray", "3, 3")
-            .style("stroke", "#343434");
-
-        // Right vertical line
-        svg.append("line")
-            .attr("x1", width - margin)
-            .attr("y1", 0)
-            .attr("x2", width - margin)
-            .attr("y2", height)
-            .style("stroke-dasharray", "3, 3")
-            .style("stroke", "#343434");
     });
 </script>
 
